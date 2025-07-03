@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buchbestand Neuindexierung</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -292,56 +291,47 @@
             <button class="btn" onclick="setCurrentLocation()">Standort bestätigen</button>
         </div>
 
-        <!-- Kamera Sektion -->
-        <div class="card" id="cameraSection">
-            <h2>📸 Buch-IDs fotografieren</h2>
-            
-            <!-- Foto Upload Alternative -->
-            <div class="camera-section">
-                <input type="file" id="photoUpload" accept="image/*" capture="environment" 
-                       style="display: none;" onchange="handlePhotoUpload(event)">
-                <button class="btn" onclick="document.getElementById('photoUpload').click()">
-                    📱 Foto auswählen/aufnehmen
-                </button>
-            </div>
-            
-            <div style="margin: 1rem 0; text-align: center;">
-                <strong>--- ODER ---</strong>
-            </div>
-            
-            <!-- Live Kamera (nur bei HTTPS) -->
-            <div class="camera-section">
-                <video id="video" autoplay playsinline></video>
-                <canvas id="canvas"></canvas>
-                <button class="btn" onclick="startCamera()">📹 Live-Kamera starten</button>
-                <button class="btn btn-success hidden" id="captureBtn" onclick="captureImage()">📷 Foto aufnehmen</button>
-                <button class="btn btn-danger hidden" id="stopCameraBtn" onclick="stopCamera()">Kamera beenden</button>
-                <div id="cameraError" class="error hidden"></div>
-            </div>
-            
-            <div id="progressSection" class="hidden">
-                <h3>🔍 Texterkennung läuft...</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <p id="progressText">Bereite Texterkennung vor...</p>
-            </div>
-
-            <div id="detectedIds" class="detected-ids hidden">
-                <h3>✏️ Erkannte IDs bearbeiten:</h3>
-                <div id="idList"></div>
-                <button class="btn btn-success" onclick="saveDetectedIds()">IDs zu Liste hinzufügen</button>
-            </div>
-        </div>
-
         <!-- Manuelle Eingabe -->
         <div class="card">
-            <h2>✍️ Manuelle ID-Eingabe</h2>
-            <div class="form-group">
-                <label for="manualId">Buch-ID (z.B. ZA1234):</label>
-                <input type="text" id="manualId" placeholder="ZA1234">
+            <h2>✍️ Buch-ID eingeben</h2>
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="bookPrefix">Buchstaben:</label>
+                    <select id="bookPrefix" style="font-size: 1.2rem; font-weight: bold;" 
+                            onchange="if(this.value) document.getElementById('bookNumber').focus()">
+                        <option value="">Wählen...</option>
+                        <option value="Stl1">Stl1</option>
+                        <option value="Stl2">Stl2</option>
+                        <option value="Stlg">Stlg</option>
+                        <option value="Z">Z</option>
+                        <option value="ZA">ZA</option>
+                        <option value="ZB">ZB</option>
+                        <option value="ZC">ZC</option>
+                        <option value="ZD">ZD</option>
+                        <option value="ZE">ZE</option>
+                        <option value="ZF">ZF</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="bookNumber">Zahlen:</label>
+                    <input type="number" id="bookNumber" placeholder="1234" 
+                           inputmode="numeric" pattern="[0-9]*" 
+                           style="font-size: 1.2rem; font-weight: bold;"
+                           onkeypress="if(event.key==='Enter') addManualId()">
+                </div>
             </div>
-            <button class="btn" onclick="addManualId()">ID hinzufügen</button>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-success" onclick="addManualId()">📖 Buch hinzufügen</button>
+                <button class="btn" onclick="resetPrefix()" style="margin-left: 0.5rem;">🔄 Präfix wechseln</button>
+            </div>
+            <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                <h4>📝 Schnell-Eingabe:</h4>
+                <p style="margin: 0.5rem 0; color: #666;">
+                    1. <strong>Buchstaben</strong> aus Dropdown wählen<br>
+                    2. <strong>Zahlen</strong> eintippen (Zahlentastatur öffnet automatisch)<br>
+                    3. <strong>Enter</strong> drücken oder Button klicken
+                </p>
+            </div>
         </div>
 
         <!-- Debug-Konsole -->
@@ -365,8 +355,6 @@
     <script>
         let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
         let currentLocationCode = '';
-        let stream = null;
-        let detectedIds = [];
         let debugMode = false;
 
         // Debug-Funktionen
@@ -387,7 +375,8 @@
             if (debugMode) {
                 debugConsole.classList.remove('hidden');
                 debugLog('Debug-Modus aktiviert');
-                debugLog('Tesseract verfügbar: ' + (typeof Tesseract !== 'undefined'));
+                debugLog('Aktueller Standort: ' + currentLocationCode);
+                debugLog('Erfasste Bücher: ' + inventory.length);
             } else {
                 debugConsole.classList.add('hidden');
             }
@@ -398,6 +387,11 @@
             updateStats();
             renderInventory();
             loadCurrentLocation();
+            
+            // Ersten Fokus auf Buchstaben-Dropdown setzen
+            setTimeout(() => {
+                document.getElementById('bookPrefix').focus();
+            }, 500);
         });
 
         // Aktueller Standort setzen
@@ -824,6 +818,14 @@
             addToInventory(id, currentLocationCode);
             input.value = '';
             showSuccess(`Buch ${id} zu ${currentLocationCode} hinzugefügt`);
+        }
+
+        // Präfix zurücksetzen für neuen Buchstabentyp
+        function resetPrefix() {
+            document.getElementById('bookPrefix').value = '';
+            document.getElementById('bookNumber').value = '';
+            document.getElementById('bookPrefix').focus();
+            showSuccess('💡 Wählen Sie einen neuen Buchstaben-Präfix aus');
         }
 
         // Zu Bestand hinzufügen
