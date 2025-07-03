@@ -305,15 +305,18 @@
             </p>
             
             <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <h4>📝 Schritt 1: Apps Script erstellen</h4>
+                <h4>📝 Schritt-für-Schritt Setup:</h4>
                 <ol style="margin: 0.5rem 0 0 1.5rem; color: #666;">
                     <li>Öffnen Sie <a href="https://script.google.com" target="_blank">script.google.com</a></li>
-                    <li>Klicken Sie "Neues Projekt"</li>
-                    <li>Kopieren Sie den Code aus der Textbox unten</li>
-                    <li>Speichern Sie das Projekt</li>
-                    <li>Klicken Sie "Bereitstellen" → "Neue Bereitstellung"</li>
-                    <li>Typ: "Web-App", Zugriff: "Jeder"</li>
-                    <li>Kopieren Sie die Web-App URL hierher:</li>
+                    <li>Klicken Sie <strong>"Neues Projekt"</strong></li>
+                    <li>Kopieren Sie den Code unten und ersetzen Sie den Standard-Code</li>
+                    <li>Klicken Sie <strong>"Speichern"</strong> (Disketten-Symbol)</li>
+                    <li>Klicken Sie <strong>"Bereitstellen"</strong> → <strong>"Neue Bereitstellung"</strong></li>
+                    <li>Bei "Typ" wählen: <strong>"Web-App"</strong></li>
+                    <li><strong>WICHTIG:</strong> "Zugriff haben" → <strong>"Jeder"</strong> (nicht "Nur ich"!)</li>
+                    <li>Klicken Sie <strong>"Bereitstellen"</strong></li>
+                    <li>Bei Berechtigung: <strong>"Zugriff prüfen"</strong> → <strong>"Erweitert"</strong> → <strong>"Zu [Projektname] wechseln"</strong></li>
+                    <li>Kopieren Sie die <strong>Web-App URL</strong> hierher</li>
                 </ol>
             </div>
             
@@ -323,27 +326,58 @@
             </div>
             
             <button class="btn btn-success" onclick="saveWebAppUrl()">✅ URL speichern</button>
+            <button class="btn" onclick="testConnection()" style="background: #f39c12;">🔍 Verbindung testen</button>
             <button class="btn" onclick="toggleSetup()">❌ Abbrechen</button>
             
-            <div style="margin-top: 1rem;">
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <h4 style="color: #856404;">⚠️ Häufige Probleme:</h4>
+                <ul style="margin: 0.5rem 0 0 1.5rem; color: #856404;">
+                    <li><strong>"Load failed"</strong> → Zugriff ist auf "Nur ich" statt "Jeder"</li>
+                    <li><strong>404 Fehler</strong> → Falsche URL oder nicht bereitgestellt</li>
+                    <li><strong>403 Fehler</strong> → Berechtigung nicht erteilt</li>
+                    <li><strong>Bei erster Nutzung:</strong> "Zugriff prüfen" → "Erweitert" → "Zu [Projekt] wechseln"</li>
+                </ul>
+            </div>
                 <h4>📋 Apps Script Code:</h4>
-                <textarea readonly style="width: 100%; height: 200px; font-family: monospace; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem;" onclick="this.select()">function doPost(e) {
+                <textarea readonly style="width: 100%; height: 300px; font-family: monospace; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem;" onclick="this.select()">function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     
-    // Neues Google Sheet erstellen oder vorhandenes verwenden
-    let sheet = SpreadsheetApp.getActiveSheet();
-    if (!sheet) {
-      const ss = SpreadsheetApp.create('Buchbestand Neuindexierung');
-      sheet = ss.getActiveSheet();
+    // Test-Request
+    if (data.test) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Test erfolgreich'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Sheet erstellen oder öffnen
+    let spreadsheet;
+    let sheet;
+    
+    try {
+      // Versuche vorhandenes Sheet zu finden
+      const files = DriveApp.getFilesByName('Buchbestand Neuindexierung');
+      if (files.hasNext()) {
+        spreadsheet = SpreadsheetApp.open(files.next());
+      } else {
+        // Neues Sheet erstellen
+        spreadsheet = SpreadsheetApp.create('Buchbestand Neuindexierung');
+      }
+      sheet = spreadsheet.getActiveSheet();
+    } catch (err) {
+      // Fallback: Neues Sheet erstellen
+      spreadsheet = SpreadsheetApp.create('Buchbestand Neuindexierung');
+      sheet = spreadsheet.getActiveSheet();
     }
     
     // Header hinzufügen wenn leer
     if (sheet.getLastRow() === 0) {
       sheet.getRange(1, 1, 1, 3).setValues([['Buch_ID', 'Neuer_Standort', 'Erfasst_am']]);
+      sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
     }
     
-    // Daten hinzufügen
+    // Daten verarbeiten
     const values = data.inventory.map(item => [
       item.bookId,
       item.location,
@@ -360,10 +394,14 @@
       sheet.getRange(2, 1, values.length, 3).setValues(values);
     }
     
+    // Auto-resize columns
+    sheet.autoResizeColumns(1, 3);
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: 'Daten erfolgreich übertragen',
-      count: values.length
+      count: values.length,
+      url: spreadsheet.getUrl()
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
@@ -655,6 +693,83 @@
             }
         }
 
+        // Verbindung testen
+        async function testConnection() {
+            const url = document.getElementById('webAppUrl').value.trim();
+            
+            if (!url) {
+                showError('Bitte geben Sie zuerst eine Web-App URL ein');
+                return;
+            }
+            
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Teste...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        test: true,
+                        inventory: []
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success !== undefined) {
+                    showSuccess('✅ Verbindung erfolgreich! Das Setup funktioniert.');
+                } else {
+                    throw new Error('Unerwartete Antwort vom Script');
+                }
+                
+            } catch (error) {
+                console.error('Test Fehler:', error);
+                
+                let errorMsg = '❌ Verbindung fehlgeschlagen:\n\n';
+                
+                if (error.message.includes('CORS')) {
+                    errorMsg += '🔒 CORS-Fehler: Apps Script nicht richtig bereitgestellt.\n\n' +
+                              '✅ Lösung:\n' +
+                              '1. Bei script.google.com → Bereitstellen → Bereitstellung verwalten\n' +
+                              '2. Zugriff haben: "Jeder" (nicht "Nur ich")\n' +
+                              '3. Neue Bereitstellung erstellen';
+                              
+                } else if (error.message.includes('404') || error.message.includes('Not Found')) {
+                    errorMsg += '🔗 URL nicht gefunden.\n\n' +
+                              '✅ Lösung:\n' +
+                              '1. Prüfen Sie die Web-App URL\n' +
+                              '2. Stellen Sie sicher, dass das Script bereitgestellt wurde';
+                              
+                } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
+                    errorMsg += '🚫 Zugriff verweigert.\n\n' +
+                              '✅ Lösung:\n' +
+                              '1. Zugriff haben: "Jeder" wählen\n' +
+                              '2. Berechtigung erteilen bei der ersten Bereitstellung';
+                              
+                } else {
+                    errorMsg += error.message + '\n\n' +
+                              '✅ Prüfen Sie:\n' +
+                              '1. Internet-Verbindung\n' +
+                              '2. Apps Script URL\n' +
+                              '3. Berechtigung auf "Jeder"';
+                }
+                
+                showError(errorMsg);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
         // Web App URL speichern
         function saveWebAppUrl() {
             const url = document.getElementById('webAppUrl').value.trim();
@@ -710,7 +825,11 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showSuccess(`✅ ${result.count} Bücher erfolgreich zu Google Sheets übertragen!`);
+                    let successMsg = `✅ ${result.count} Bücher erfolgreich zu Google Sheets übertragen!`;
+                    if (result.url) {
+                        successMsg += `\n\n📊 Sheet öffnen: ${result.url}`;
+                    }
+                    showSuccess(successMsg);
                 } else {
                     throw new Error(result.error || 'Unbekannter Fehler');
                 }
