@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buchbestand Neuindexierung</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -295,12 +295,28 @@
         <!-- Kamera Sektion -->
         <div class="card" id="cameraSection">
             <h2>📸 Buch-IDs fotografieren</h2>
+            
+            <!-- Foto Upload Alternative -->
+            <div class="camera-section">
+                <input type="file" id="photoUpload" accept="image/*" capture="environment" 
+                       style="display: none;" onchange="handlePhotoUpload(event)">
+                <button class="btn" onclick="document.getElementById('photoUpload').click()">
+                    📱 Foto auswählen/aufnehmen
+                </button>
+            </div>
+            
+            <div style="margin: 1rem 0; text-align: center;">
+                <strong>--- ODER ---</strong>
+            </div>
+            
+            <!-- Live Kamera (nur bei HTTPS) -->
             <div class="camera-section">
                 <video id="video" autoplay playsinline></video>
                 <canvas id="canvas"></canvas>
-                <button class="btn" onclick="startCamera()">Kamera starten</button>
+                <button class="btn" onclick="startCamera()">📹 Live-Kamera starten</button>
                 <button class="btn btn-success hidden" id="captureBtn" onclick="captureImage()">📷 Foto aufnehmen</button>
                 <button class="btn btn-danger hidden" id="stopCameraBtn" onclick="stopCamera()">Kamera beenden</button>
+                <div id="cameraError" class="error hidden"></div>
             </div>
             
             <div id="progressSection" class="hidden">
@@ -328,7 +344,12 @@
             <button class="btn" onclick="addManualId()">ID hinzufügen</button>
         </div>
 
-        <!-- Bestandsliste -->
+        <!-- Debug-Konsole -->
+        <div class="card">
+            <h2>🔧 Debug-Konsole</h2>
+            <button class="btn" onclick="toggleDebug()">Debug-Modus ein/aus</button>
+            <div id="debugConsole" class="hidden" style="background: #000; color: #0f0; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; height: 200px; overflow-y: auto; margin-top: 1rem;"></div>
+        </div>
         <div class="card">
             <h2>📋 Erfasste Bücher</h2>
             <div class="inventory-list" id="inventoryList">
@@ -346,6 +367,31 @@
         let currentLocationCode = '';
         let stream = null;
         let detectedIds = [];
+        let debugMode = false;
+
+        // Debug-Funktionen
+        function debugLog(message) {
+            console.log(message);
+            if (debugMode) {
+                const debugConsole = document.getElementById('debugConsole');
+                if (debugConsole) {
+                    debugConsole.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '\n';
+                    debugConsole.scrollTop = debugConsole.scrollHeight;
+                }
+            }
+        }
+
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugConsole = document.getElementById('debugConsole');
+            if (debugMode) {
+                debugConsole.classList.remove('hidden');
+                debugLog('Debug-Modus aktiviert');
+                debugLog('Tesseract verfügbar: ' + (typeof Tesseract !== 'undefined'));
+            } else {
+                debugConsole.classList.add('hidden');
+            }
+        }
 
         // App initialisieren
         document.addEventListener('DOMContentLoaded', function() {
@@ -375,14 +421,50 @@
             showSuccess(`Standort ${currentLocationCode} ausgewählt`);
         }
 
-        // Kamera starten
+        // Foto Upload verarbeiten
+        function handlePhotoUpload(event) {
+            if (!currentLocationCode) {
+                showError('Bitte wählen Sie zuerst einen Standort aus');
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showError('Bitte wählen Sie eine Bilddatei aus');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                performOCR(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Kamera starten (mit verbessertem Error-Handling)
         async function startCamera() {
             if (!currentLocationCode) {
                 showError('Bitte wählen Sie zuerst einen Standort aus');
                 return;
             }
 
+            // HTTPS-Check
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                document.getElementById('cameraError').innerHTML = 
+                    '⚠️ <strong>Kamera benötigt HTTPS!</strong><br>' +
+                    'Verwenden Sie stattdessen "Foto auswählen/aufnehmen" oder hosten Sie die App über HTTPS.';
+                document.getElementById('cameraError').classList.remove('hidden');
+                return;
+            }
+
             try {
+                // Prüfe ob MediaDevices verfügbar ist
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Kamera-API nicht verfügbar in diesem Browser');
+                }
+
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
                         facingMode: 'environment',
@@ -397,10 +479,25 @@
                 document.querySelector('button[onclick="startCamera()"]').classList.add('hidden');
                 document.getElementById('captureBtn').classList.remove('hidden');
                 document.getElementById('stopCameraBtn').classList.remove('hidden');
+                document.getElementById('cameraError').classList.add('hidden');
                 
                 showSuccess('Kamera bereit - positionieren Sie die Buch-IDs im Bild');
+                
             } catch (error) {
-                showError('Kamera konnte nicht gestartet werden: ' + error.message);
+                let errorMsg = 'Kamera konnte nicht gestartet werden: ';
+                
+                if (error.name === 'NotAllowedError') {
+                    errorMsg += 'Kamera-Zugriff wurde verweigert. Bitte erteilen Sie die Berechtigung.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg += 'Keine Kamera gefunden.';
+                } else if (error.name === 'NotSupportedError') {
+                    errorMsg += 'Kamera wird nicht unterstützt.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                document.getElementById('cameraError').textContent = errorMsg;
+                document.getElementById('cameraError').classList.remove('hidden');
             }
         }
 
@@ -435,37 +532,98 @@
             document.getElementById('stopCameraBtn').classList.add('hidden');
         }
 
-        // OCR Texterkennung
+        // OCR Texterkennung mit verbessertem Error-Handling
         async function performOCR(imageData) {
             document.getElementById('progressSection').classList.remove('hidden');
             document.getElementById('detectedIds').classList.add('hidden');
             
+            // Progress auf 0% setzen
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = 'Bereite Texterkennung vor...';
+            
+            debugLog('Starte OCR-Prozess...');
+            
             try {
-                const worker = await Tesseract.createWorker();
+                // Tesseract verfügbar prüfen
+                if (typeof Tesseract === 'undefined') {
+                    throw new Error('Tesseract.js Bibliothek konnte nicht geladen werden');
+                }
                 
-                await worker.loadLanguage('eng');
-                await worker.initialize('eng');
+                debugLog('Tesseract.js gefunden, erstelle Worker...');
+                document.getElementById('progressText').textContent = 'Erstelle OCR-Worker...';
                 
-                // OCR mit Progress-Updates
-                const { data: { text } } = await worker.recognize(imageData, {
+                const worker = await Tesseract.createWorker({
                     logger: m => {
-                        if (m.status === 'recognizing text') {
+                        debugLog('OCR Logger: ' + JSON.stringify(m));
+                        
+                        if (m.status === 'loading tesseract core') {
+                            document.getElementById('progressText').textContent = 'Lade OCR-Engine...';
+                            document.getElementById('progressFill').style.width = '20%';
+                        } else if (m.status === 'initializing tesseract') {
+                            document.getElementById('progressText').textContent = 'Initialisiere OCR...';
+                            document.getElementById('progressFill').style.width = '40%';
+                        } else if (m.status === 'loading language traineddata') {
+                            document.getElementById('progressText').textContent = 'Lade Sprachdaten...';
+                            document.getElementById('progressFill').style.width = '60%';
+                        } else if (m.status === 'initializing api') {
+                            document.getElementById('progressText').textContent = 'Bereite Erkennung vor...';
+                            document.getElementById('progressFill').style.width = '80%';
+                        } else if (m.status === 'recognizing text') {
                             const progress = Math.round(m.progress * 100);
-                            document.getElementById('progressFill').style.width = progress + '%';
+                            document.getElementById('progressFill').style.width = (80 + progress * 0.2) + '%';
                             document.getElementById('progressText').textContent = 
                                 `Texterkennung: ${progress}%`;
                         }
                     }
                 });
                 
+                debugLog('Worker erstellt, lade Sprache...');
+                await worker.loadLanguage('eng');
+                
+                debugLog('Initialisiere Worker...');
+                await worker.initialize('eng');
+                
+                debugLog('Starte Texterkennung...');
+                document.getElementById('progressText').textContent = 'Analysiere Bild...';
+                
+                // OCR mit Timeout
+                const recognitionPromise = worker.recognize(imageData);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('OCR-Timeout nach 60 Sekunden')), 60000)
+                );
+                
+                const { data: { text } } = await Promise.race([recognitionPromise, timeoutPromise]);
+                
+                debugLog('OCR-Ergebnis: ' + text);
+                
                 await worker.terminate();
+                
+                // Progress auf 100%
+                document.getElementById('progressFill').style.width = '100%';
+                document.getElementById('progressText').textContent = 'Texterkennung abgeschlossen!';
                 
                 // Text verarbeiten
                 processOCRText(text);
                 
             } catch (error) {
-                showError('Texterkennung fehlgeschlagen: ' + error.message);
+                debugLog('OCR Fehler: ' + error.message);
+                debugLog('Error Stack: ' + error.stack);
+                
+                // Fallback: Manuelle Eingabe anbieten
                 document.getElementById('progressSection').classList.add('hidden');
+                
+                showError('Texterkennung fehlgeschlagen: ' + error.message + 
+                         '\n\nBitte nutzen Sie die manuelle Eingabe oder versuchen Sie ein anderes Foto.');
+                
+                // Fallback: Manuelle Eingabe-Dialog
+                showManualInputDialog();
+            }
+        }
+        
+        // Fallback: Manuelle Eingabe-Dialog
+        function showManualInputDialog() {
+            if (confirm('OCR funktioniert nicht. Möchten Sie die IDs stattdessen manuell eingeben?')) {
+                document.getElementById('manualId').focus();
             }
         }
 
