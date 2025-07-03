@@ -421,7 +421,7 @@
             showSuccess(`Standort ${currentLocationCode} ausgewählt`);
         }
 
-        // Foto Upload verarbeiten
+        // Foto Upload verarbeiten (mit Vorschau)
         function handlePhotoUpload(event) {
             if (!currentLocationCode) {
                 showError('Bitte wählen Sie zuerst einen Standort aus');
@@ -438,9 +438,68 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                performOCR(e.target.result);
+                const imageData = e.target.result;
+                
+                // Foto-Vorschau anzeigen
+                showPhotoPreview(imageData);
             };
             reader.readAsDataURL(file);
+        }
+
+        // Foto-Vorschau anzeigen
+        function showPhotoPreview(imageData) {
+            // Vorschau-Container erstellen falls nicht vorhanden
+            let previewContainer = document.getElementById('photoPreview');
+            if (!previewContainer) {
+                previewContainer = document.createElement('div');
+                previewContainer.id = 'photoPreview';
+                previewContainer.className = 'card';
+                previewContainer.innerHTML = `
+                    <h2>📷 Aufgenommenes Foto</h2>
+                    <img id="previewImage" style="width: 100%; max-width: 400px; border-radius: 8px; margin-bottom: 1rem;" />
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-success" onclick="startOCRFromPreview()">🔍 OCR starten</button>
+                        <button class="btn" onclick="retakePhoto()">🔄 Neues Foto</button>
+                        <button class="btn" onclick="skipToManual()">✍️ Manuell eingeben</button>
+                    </div>
+                    <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                        💡 <strong>Tipp:</strong> Wenn die IDs schlecht lesbar sind, nutzen Sie die manuelle Eingabe. 
+                        Sie können das Foto als Referenz verwenden und die IDs abtippen.
+                    </p>
+                `;
+                
+                // Nach der Kamera-Sektion einfügen
+                const cameraSection = document.getElementById('cameraSection');
+                cameraSection.parentNode.insertBefore(previewContainer, cameraSection.nextSibling);
+            }
+            
+            // Bild anzeigen
+            document.getElementById('previewImage').src = imageData;
+            previewContainer.style.display = 'block';
+            
+            // Aktuelles Bild speichern für OCR
+            window.currentImageData = imageData;
+            
+            showSuccess('📷 Foto aufgenommen! Sie können jetzt OCR starten oder die IDs manuell eingeben.');
+        }
+
+        // OCR von Vorschau starten
+        function startOCRFromPreview() {
+            if (window.currentImageData) {
+                performOCR(window.currentImageData);
+            }
+        }
+
+        // Neues Foto aufnehmen
+        function retakePhoto() {
+            document.getElementById('photoUpload').click();
+        }
+
+        // Zur manuellen Eingabe springen
+        function skipToManual() {
+            document.getElementById('manualId').focus();
+            document.getElementById('manualId').placeholder = 'IDs aus dem Foto abtippen...';
+            showSuccess('💡 Schauen Sie auf das Foto und geben Sie die IDs einzeln ein.');
         }
 
         // Kamera starten (mit verbessertem Error-Handling)
@@ -532,7 +591,7 @@
             document.getElementById('stopCameraBtn').classList.add('hidden');
         }
 
-        // OCR Texterkennung mit verbessertem Error-Handling
+        // OCR Texterkennung mit optimierten Einstellungen für handgeschriebene IDs
         async function performOCR(imageData) {
             document.getElementById('progressSection').classList.remove('hidden');
             document.getElementById('detectedIds').classList.add('hidden');
@@ -541,7 +600,7 @@
             document.getElementById('progressFill').style.width = '0%';
             document.getElementById('progressText').textContent = 'Bereite Texterkennung vor...';
             
-            debugLog('Starte OCR-Prozess...');
+            debugLog('Starte OCR-Prozess mit optimierten Einstellungen...');
             
             try {
                 // Tesseract verfügbar prüfen
@@ -558,43 +617,51 @@
                         
                         if (m.status === 'loading tesseract core') {
                             document.getElementById('progressText').textContent = 'Lade OCR-Engine...';
-                            document.getElementById('progressFill').style.width = '20%';
+                            document.getElementById('progressFill').style.width = '15%';
                         } else if (m.status === 'initializing tesseract') {
                             document.getElementById('progressText').textContent = 'Initialisiere OCR...';
-                            document.getElementById('progressFill').style.width = '40%';
+                            document.getElementById('progressFill').style.width = '30%';
                         } else if (m.status === 'loading language traineddata') {
                             document.getElementById('progressText').textContent = 'Lade Sprachdaten...';
-                            document.getElementById('progressFill').style.width = '60%';
+                            document.getElementById('progressFill').style.width = '50%';
                         } else if (m.status === 'initializing api') {
                             document.getElementById('progressText').textContent = 'Bereite Erkennung vor...';
-                            document.getElementById('progressFill').style.width = '80%';
+                            document.getElementById('progressFill').style.width = '70%';
                         } else if (m.status === 'recognizing text') {
                             const progress = Math.round(m.progress * 100);
-                            document.getElementById('progressFill').style.width = (80 + progress * 0.2) + '%';
+                            document.getElementById('progressFill').style.width = (70 + progress * 0.3) + '%';
                             document.getElementById('progressText').textContent = 
                                 `Texterkennung: ${progress}%`;
                         }
                     }
                 });
                 
-                debugLog('Worker erstellt, lade Sprache...');
-                await worker.loadLanguage('eng');
+                debugLog('Worker erstellt, lade deutsche und englische Sprache...');
+                // Sowohl Deutsch als auch Englisch laden für bessere ID-Erkennung
+                await worker.loadLanguage('eng+deu');
                 
                 debugLog('Initialisiere Worker...');
-                await worker.initialize('eng');
+                await worker.initialize('eng+deu');
                 
-                debugLog('Starte Texterkennung...');
+                // Optimierte Einstellungen für Buch-IDs
+                await worker.setParameters({
+                    'tessedit_char_whitelist': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                    'tessedit_pageseg_mode': '6', // Uniform block of text
+                    'preserve_interword_spaces': '0'
+                });
+                
+                debugLog('Starte Texterkennung mit optimierten Parametern...');
                 document.getElementById('progressText').textContent = 'Analysiere Bild...';
                 
                 // OCR mit Timeout
                 const recognitionPromise = worker.recognize(imageData);
                 const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('OCR-Timeout nach 60 Sekunden')), 60000)
+                    setTimeout(() => reject(new Error('OCR-Timeout nach 45 Sekunden')), 45000)
                 );
                 
                 const { data: { text } } = await Promise.race([recognitionPromise, timeoutPromise]);
                 
-                debugLog('OCR-Ergebnis: ' + text);
+                debugLog('OCR-Ergebnis (roh): ' + text);
                 
                 await worker.terminate();
                 
@@ -612,11 +679,15 @@
                 // Fallback: Manuelle Eingabe anbieten
                 document.getElementById('progressSection').classList.add('hidden');
                 
-                showError('Texterkennung fehlgeschlagen: ' + error.message + 
-                         '\n\nBitte nutzen Sie die manuelle Eingabe oder versuchen Sie ein anderes Foto.');
+                showError('Texterkennung der handgeschriebenen IDs war nicht erfolgreich. ' + 
+                         'Das ist normal bei Bleistift-Handschrift!\n\n' +
+                         '💡 Tipp: Nutzen Sie die manuelle Eingabe oder probieren Sie ein schärferes Foto bei besserer Beleuchtung.');
                 
-                // Fallback: Manuelle Eingabe-Dialog
-                showManualInputDialog();
+                // Sofort manuelle Eingabe fokussieren
+                setTimeout(() => {
+                    document.getElementById('manualId').focus();
+                    document.getElementById('manualId').placeholder = 'z.B. ZA1234 (aus dem Foto abtippen)';
+                }, 1000);
             }
         }
         
@@ -627,23 +698,68 @@
             }
         }
 
-        // OCR Text verarbeiten
+        // OCR Text verarbeiten mit verbesserter Mustererkennung
         function processOCRText(text) {
-            // Potenzielle Buch-IDs extrahieren (Format: 2-3 Buchstaben + 4-5 Zahlen)
-            const idPattern = /[A-Z]{1,3}\d{3,5}/g;
-            const matches = text.match(idPattern) || [];
+            debugLog('Verarbeite OCR-Text: ' + text);
             
-            // Duplikate entfernen
-            detectedIds = [...new Set(matches)];
+            // Verschiedene Muster für Buch-IDs probieren
+            const patterns = [
+                /[A-Z]{1,3}\d{3,5}/g,           // Standard: ZA1234
+                /[A-Z]{1,2}\s*\d{3,5}/g,        // Mit Leerzeichen: ZA 1234
+                /[A-Z]\s*[A-Z]\s*\d{3,5}/g,     // Getrennte Buchstaben: Z A 1234
+                /\b[A-Z]{1,3}\d{3,5}\b/g,       // Wortgrenzen
+                /[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{1,3}[0123456789]{3,5}/g // Nur erlaubte Zeichen
+            ];
+            
+            let allMatches = [];
+            
+            // Alle Muster durchprobieren
+            patterns.forEach(pattern => {
+                const matches = text.match(pattern) || [];
+                allMatches = allMatches.concat(matches);
+            });
+            
+            // Text nach Zeilen aufteilen und jede Zeile einzeln analysieren
+            const lines = text.split(/[\n\r]+/);
+            lines.forEach(line => {
+                // Aufräumen: nur Buchstaben und Zahlen behalten
+                const cleaned = line.replace(/[^A-Z0-9\s]/g, '').trim();
+                if (cleaned.length >= 4 && cleaned.length <= 8) {
+                    // Könnte eine ID sein
+                    const hasLetter = /[A-Z]/.test(cleaned);
+                    const hasNumber = /[0-9]/.test(cleaned);
+                    if (hasLetter && hasNumber) {
+                        allMatches.push(cleaned.replace(/\s/g, ''));
+                    }
+                }
+            });
+            
+            // Duplikate entfernen und sortieren
+            detectedIds = [...new Set(allMatches)]
+                .filter(id => id.length >= 4 && id.length <= 8)
+                .sort();
+            
+            debugLog('Gefundene potenzielle IDs: ' + JSON.stringify(detectedIds));
             
             document.getElementById('progressSection').classList.add('hidden');
             
             if (detectedIds.length > 0) {
                 renderDetectedIds();
                 document.getElementById('detectedIds').classList.remove('hidden');
-                showSuccess(`${detectedIds.length} mögliche Buch-IDs erkannt`);
+                showSuccess(`${detectedIds.length} mögliche Buch-IDs gefunden! Bitte prüfen und korrigieren Sie diese.`);
             } else {
-                showError('Keine Buch-IDs erkannt. Versuchen Sie ein klareres Foto oder manuelle Eingabe.');
+                showError('❌ Keine erkennbaren Buch-IDs im Foto gefunden.\n\n' +
+                         '💡 Tipps für bessere Ergebnisse:\n' +
+                         '• Bessere Beleuchtung verwenden\n' +
+                         '• Foto schärfer machen\n' +
+                         '• IDs einzeln großformatig fotografieren\n' +
+                         '• Manuelle Eingabe nutzen');
+                
+                // Manuelle Eingabe fokussieren
+                setTimeout(() => {
+                    document.getElementById('manualId').focus();
+                    document.getElementById('manualId').placeholder = 'IDs aus dem Foto hier eingeben...';
+                }, 1000);
             }
         }
 
