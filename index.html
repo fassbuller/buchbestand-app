@@ -91,76 +91,12 @@
             background: #229954;
         }
 
-        .btn-danger {
-            background: #e74c3c;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .camera-section {
-            text-align: center;
-        }
-
-        #video {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        #canvas {
-            display: none;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #3498db;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .detected-ids {
-            margin-top: 1rem;
-        }
-
-        .id-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8f9fa;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            border-radius: 6px;
-            border-left: 4px solid #3498db;
-        }
-
-        .id-input {
-            flex: 1;
-            margin-right: 0.5rem;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
+        .btn-small {
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+            margin-bottom: 0;
         }
 
         .inventory-list {
@@ -215,16 +151,6 @@
             font-size: 0.9rem;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-        }
-
         .error {
             background: #fff5f5;
             color: #e53e3e;
@@ -243,6 +169,36 @@
             margin-bottom: 1rem;
         }
 
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .tips {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 0.5rem;
@@ -250,6 +206,11 @@
             
             .card {
                 padding: 1rem;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -280,25 +241,26 @@
         <!-- Standort eingeben -->
         <div class="card">
             <h2>🏷️ Neuer Standort</h2>
-            <div class="form-group">
-                <label for="shelfNumber">Regal Nummer (z.B. R001):</label>
-                <input type="text" id="shelfNumber" placeholder="R001" pattern="R\d{3}" maxlength="4">
+            <div class="input-grid">
+                <div class="form-group">
+                    <label for="shelfNumber">Regal (z.B. R001):</label>
+                    <input type="text" id="shelfNumber" placeholder="R001" maxlength="4">
+                </div>
+                <div class="form-group">
+                    <label for="compartmentNumber">Fach (z.B. F02):</label>
+                    <input type="text" id="compartmentNumber" placeholder="F02" maxlength="3">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="compartmentNumber">Fach Nummer (z.B. F02):</label>
-                <input type="text" id="compartmentNumber" placeholder="F02" pattern="F\d{2}" maxlength="3">
-            </div>
-            <button class="btn" onclick="setCurrentLocation()">Standort bestätigen</button>
+            <button class="btn" onclick="setCurrentLocation()">✅ Standort bestätigen</button>
         </div>
 
-        <!-- Manuelle Eingabe -->
+        <!-- Buch-ID eingeben -->
         <div class="card">
             <h2>✍️ Buch-ID eingeben</h2>
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; align-items: end;">
-                <div class="form-group" style="margin-bottom: 0;">
+            <div class="input-grid">
+                <div class="form-group">
                     <label for="bookPrefix">Buchstaben:</label>
-                    <select id="bookPrefix" style="font-size: 1.2rem; font-weight: bold;" 
-                            onchange="if(this.value) document.getElementById('bookNumber').focus()">
+                    <select id="bookPrefix" style="font-size: 1.2rem; font-weight: bold;">
                         <option value="">Wählen...</option>
                         <option value="Stl1">Stl1</option>
                         <option value="Stl2">Stl2</option>
@@ -312,38 +274,34 @@
                         <option value="ZF">ZF</option>
                     </select>
                 </div>
-                <div class="form-group" style="margin-bottom: 0;">
+                <div class="form-group">
                     <label for="bookNumber">Zahlen:</label>
                     <input type="number" id="bookNumber" placeholder="1234" 
                            inputmode="numeric" pattern="[0-9]*" 
-                           style="font-size: 1.2rem; font-weight: bold;"
-                           onkeypress="if(event.key==='Enter') addManualId()">
+                           style="font-size: 1.2rem; font-weight: bold;">
                 </div>
             </div>
-            <div style="margin-top: 1rem;">
-                <button class="btn btn-success" onclick="addManualId()">📖 Buch hinzufügen</button>
-                <button class="btn" onclick="resetPrefix()" style="margin-left: 0.5rem;">🔄 Präfix wechseln</button>
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <button class="btn btn-success" onclick="addBook()">📖 Buch hinzufügen</button>
+                <button class="btn btn-small" onclick="resetForm()">🔄 Reset</button>
+                <button class="btn btn-small" onclick="undoLastBook()" id="undoBtn" style="display: none; background: #f39c12;">↩️ Rückgängig</button>
             </div>
-            <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+            
+            <div class="tips">
                 <h4>📝 Schnell-Eingabe:</h4>
                 <p style="margin: 0.5rem 0; color: #666;">
                     1. <strong>Buchstaben</strong> aus Dropdown wählen<br>
-                    2. <strong>Zahlen</strong> eintippen (Zahlentastatur öffnet automatisch)<br>
+                    2. <strong>Zahlen</strong> eintippen<br>
                     3. <strong>Enter</strong> drücken oder Button klicken
                 </p>
             </div>
         </div>
 
-        <!-- Debug-Konsole -->
-        <div class="card">
-            <h2>🔧 Debug-Konsole</h2>
-            <button class="btn" onclick="toggleDebug()">Debug-Modus ein/aus</button>
-            <div id="debugConsole" class="hidden" style="background: #000; color: #0f0; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; height: 200px; overflow-y: auto; margin-top: 1rem;"></div>
-        </div>
+        <!-- Bestandsliste -->
         <div class="card">
             <h2>📋 Erfasste Bücher</h2>
             <div class="inventory-list" id="inventoryList">
-                <p class="loading">Noch keine Bücher erfasst...</p>
+                <p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>
             </div>
             <div style="margin-top: 1rem;">
                 <button class="btn btn-success" onclick="exportData()">📊 Liste exportieren (CSV)</button>
@@ -353,34 +311,10 @@
     </div>
 
     <script>
+        // Globale Variablen
         let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
         let currentLocationCode = '';
-        let debugMode = false;
-
-        // Debug-Funktionen
-        function debugLog(message) {
-            console.log(message);
-            if (debugMode) {
-                const debugConsole = document.getElementById('debugConsole');
-                if (debugConsole) {
-                    debugConsole.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '\n';
-                    debugConsole.scrollTop = debugConsole.scrollHeight;
-                }
-            }
-        }
-
-        function toggleDebug() {
-            debugMode = !debugMode;
-            const debugConsole = document.getElementById('debugConsole');
-            if (debugMode) {
-                debugConsole.classList.remove('hidden');
-                debugLog('Debug-Modus aktiviert');
-                debugLog('Aktueller Standort: ' + currentLocationCode);
-                debugLog('Erfasste Bücher: ' + inventory.length);
-            } else {
-                debugConsole.classList.add('hidden');
-            }
-        }
+        let lastAddedBook = null;
 
         // App initialisieren
         document.addEventListener('DOMContentLoaded', function() {
@@ -388,454 +322,132 @@
             renderInventory();
             loadCurrentLocation();
             
-            // Ersten Fokus auf Buchstaben-Dropdown setzen
-            setTimeout(() => {
-                document.getElementById('bookPrefix').focus();
-            }, 500);
+            // Enter-Taste Unterstützung
+            document.getElementById('bookNumber').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addBook();
+                }
+            });
+            
+            // Auto-Fokus bei Präfix-Wahl
+            document.getElementById('bookPrefix').addEventListener('change', function() {
+                if (this.value) {
+                    document.getElementById('bookNumber').focus();
+                }
+            });
         });
 
         // Aktueller Standort setzen
         function setCurrentLocation() {
-            const shelf = document.getElementById('shelfNumber').value.toUpperCase();
-            const compartment = document.getElementById('compartmentNumber').value.toUpperCase();
+            const shelf = document.getElementById('shelfNumber').value.toUpperCase().trim();
+            const compartment = document.getElementById('compartmentNumber').value.toUpperCase().trim();
             
+            if (!shelf || !compartment) {
+                showError('Bitte geben Sie Regal und Fach an');
+                return;
+            }
+            
+            // Validierung
             if (!shelf.match(/^R\d{3}$/)) {
-                showError('Bitte geben Sie eine gültige Regal-Nummer ein (z.B. R001)');
+                showError('Regal-Format: R001, R002, etc.');
                 return;
             }
             
             if (!compartment.match(/^F\d{2}$/)) {
-                showError('Bitte geben Sie eine gültige Fach-Nummer ein (z.B. F02)');
+                showError('Fach-Format: F01, F02, etc.');
                 return;
             }
             
             currentLocationCode = shelf + compartment;
             localStorage.setItem('currentLocation', currentLocationCode);
             updateStats();
-            showSuccess(`Standort ${currentLocationCode} ausgewählt`);
+            showSuccess(`✅ Standort ${currentLocationCode} ausgewählt`);
+            
+            // Fokus auf Buchstaben-Dropdown
+            setTimeout(() => {
+                document.getElementById('bookPrefix').focus();
+            }, 500);
         }
 
-        // Foto Upload verarbeiten (mit Vorschau)
-        function handlePhotoUpload(event) {
+        // Buch hinzufügen
+        function addBook() {
+            const prefix = document.getElementById('bookPrefix').value;
+            const number = document.getElementById('bookNumber').value.trim();
+            
+            // Validierungen
             if (!currentLocationCode) {
-                showError('Bitte wählen Sie zuerst einen Standort aus');
-                return;
-            }
-
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showError('Bitte wählen Sie eine Bilddatei aus');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageData = e.target.result;
-                
-                // Foto-Vorschau anzeigen
-                showPhotoPreview(imageData);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Foto-Vorschau anzeigen
-        function showPhotoPreview(imageData) {
-            // Vorschau-Container erstellen falls nicht vorhanden
-            let previewContainer = document.getElementById('photoPreview');
-            if (!previewContainer) {
-                previewContainer = document.createElement('div');
-                previewContainer.id = 'photoPreview';
-                previewContainer.className = 'card';
-                previewContainer.innerHTML = `
-                    <h2>📷 Aufgenommenes Foto</h2>
-                    <img id="previewImage" style="width: 100%; max-width: 400px; border-radius: 8px; margin-bottom: 1rem;" />
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="btn btn-success" onclick="startOCRFromPreview()">🔍 OCR starten</button>
-                        <button class="btn" onclick="retakePhoto()">🔄 Neues Foto</button>
-                        <button class="btn" onclick="skipToManual()">✍️ Manuell eingeben</button>
-                    </div>
-                    <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
-                        💡 <strong>Tipp:</strong> Wenn die IDs schlecht lesbar sind, nutzen Sie die manuelle Eingabe. 
-                        Sie können das Foto als Referenz verwenden und die IDs abtippen.
-                    </p>
-                `;
-                
-                // Nach der Kamera-Sektion einfügen
-                const cameraSection = document.getElementById('cameraSection');
-                cameraSection.parentNode.insertBefore(previewContainer, cameraSection.nextSibling);
-            }
-            
-            // Bild anzeigen
-            document.getElementById('previewImage').src = imageData;
-            previewContainer.style.display = 'block';
-            
-            // Aktuelles Bild speichern für OCR
-            window.currentImageData = imageData;
-            
-            showSuccess('📷 Foto aufgenommen! Sie können jetzt OCR starten oder die IDs manuell eingeben.');
-        }
-
-        // OCR von Vorschau starten
-        function startOCRFromPreview() {
-            if (window.currentImageData) {
-                performOCR(window.currentImageData);
-            }
-        }
-
-        // Neues Foto aufnehmen
-        function retakePhoto() {
-            document.getElementById('photoUpload').click();
-        }
-
-        // Zur manuellen Eingabe springen
-        function skipToManual() {
-            document.getElementById('manualId').focus();
-            document.getElementById('manualId').placeholder = 'IDs aus dem Foto abtippen...';
-            showSuccess('💡 Schauen Sie auf das Foto und geben Sie die IDs einzeln ein.');
-        }
-
-        // Kamera starten (mit verbessertem Error-Handling)
-        async function startCamera() {
-            if (!currentLocationCode) {
-                showError('Bitte wählen Sie zuerst einen Standort aus');
-                return;
-            }
-
-            // HTTPS-Check
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                document.getElementById('cameraError').innerHTML = 
-                    '⚠️ <strong>Kamera benötigt HTTPS!</strong><br>' +
-                    'Verwenden Sie stattdessen "Foto auswählen/aufnehmen" oder hosten Sie die App über HTTPS.';
-                document.getElementById('cameraError').classList.remove('hidden');
-                return;
-            }
-
-            try {
-                // Prüfe ob MediaDevices verfügbar ist
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    throw new Error('Kamera-API nicht verfügbar in diesem Browser');
-                }
-
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    } 
-                });
-                
-                const video = document.getElementById('video');
-                video.srcObject = stream;
-                
-                document.querySelector('button[onclick="startCamera()"]').classList.add('hidden');
-                document.getElementById('captureBtn').classList.remove('hidden');
-                document.getElementById('stopCameraBtn').classList.remove('hidden');
-                document.getElementById('cameraError').classList.add('hidden');
-                
-                showSuccess('Kamera bereit - positionieren Sie die Buch-IDs im Bild');
-                
-            } catch (error) {
-                let errorMsg = 'Kamera konnte nicht gestartet werden: ';
-                
-                if (error.name === 'NotAllowedError') {
-                    errorMsg += 'Kamera-Zugriff wurde verweigert. Bitte erteilen Sie die Berechtigung.';
-                } else if (error.name === 'NotFoundError') {
-                    errorMsg += 'Keine Kamera gefunden.';
-                } else if (error.name === 'NotSupportedError') {
-                    errorMsg += 'Kamera wird nicht unterstützt.';
-                } else {
-                    errorMsg += error.message;
-                }
-                
-                document.getElementById('cameraError').textContent = errorMsg;
-                document.getElementById('cameraError').classList.remove('hidden');
-            }
-        }
-
-        // Foto aufnehmen und OCR starten
-        async function captureImage() {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0);
-            
-            const imageData = canvas.toDataURL('image/png');
-            
-            // Kamera stoppen
-            stopCamera();
-            
-            // OCR starten
-            await performOCR(imageData);
-        }
-
-        // Kamera stoppen
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            
-            document.querySelector('button[onclick="startCamera()"]').classList.remove('hidden');
-            document.getElementById('captureBtn').classList.add('hidden');
-            document.getElementById('stopCameraBtn').classList.add('hidden');
-        }
-
-        // OCR Texterkennung mit optimierten Einstellungen für handgeschriebene IDs
-        async function performOCR(imageData) {
-            document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('detectedIds').classList.add('hidden');
-            
-            // Progress auf 0% setzen
-            document.getElementById('progressFill').style.width = '0%';
-            document.getElementById('progressText').textContent = 'Bereite Texterkennung vor...';
-            
-            debugLog('Starte OCR-Prozess mit optimierten Einstellungen...');
-            
-            try {
-                // Tesseract verfügbar prüfen
-                if (typeof Tesseract === 'undefined') {
-                    throw new Error('Tesseract.js Bibliothek konnte nicht geladen werden');
-                }
-                
-                debugLog('Tesseract.js gefunden, erstelle Worker...');
-                document.getElementById('progressText').textContent = 'Erstelle OCR-Worker...';
-                
-                const worker = await Tesseract.createWorker({
-                    logger: m => {
-                        debugLog('OCR Logger: ' + JSON.stringify(m));
-                        
-                        if (m.status === 'loading tesseract core') {
-                            document.getElementById('progressText').textContent = 'Lade OCR-Engine...';
-                            document.getElementById('progressFill').style.width = '15%';
-                        } else if (m.status === 'initializing tesseract') {
-                            document.getElementById('progressText').textContent = 'Initialisiere OCR...';
-                            document.getElementById('progressFill').style.width = '30%';
-                        } else if (m.status === 'loading language traineddata') {
-                            document.getElementById('progressText').textContent = 'Lade Sprachdaten...';
-                            document.getElementById('progressFill').style.width = '50%';
-                        } else if (m.status === 'initializing api') {
-                            document.getElementById('progressText').textContent = 'Bereite Erkennung vor...';
-                            document.getElementById('progressFill').style.width = '70%';
-                        } else if (m.status === 'recognizing text') {
-                            const progress = Math.round(m.progress * 100);
-                            document.getElementById('progressFill').style.width = (70 + progress * 0.3) + '%';
-                            document.getElementById('progressText').textContent = 
-                                `Texterkennung: ${progress}%`;
-                        }
-                    }
-                });
-                
-                debugLog('Worker erstellt, lade deutsche und englische Sprache...');
-                // Sowohl Deutsch als auch Englisch laden für bessere ID-Erkennung
-                await worker.loadLanguage('eng+deu');
-                
-                debugLog('Initialisiere Worker...');
-                await worker.initialize('eng+deu');
-                
-                // Optimierte Einstellungen für Buch-IDs
-                await worker.setParameters({
-                    'tessedit_char_whitelist': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                    'tessedit_pageseg_mode': '6', // Uniform block of text
-                    'preserve_interword_spaces': '0'
-                });
-                
-                debugLog('Starte Texterkennung mit optimierten Parametern...');
-                document.getElementById('progressText').textContent = 'Analysiere Bild...';
-                
-                // OCR mit Timeout
-                const recognitionPromise = worker.recognize(imageData);
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('OCR-Timeout nach 45 Sekunden')), 45000)
-                );
-                
-                const { data: { text } } = await Promise.race([recognitionPromise, timeoutPromise]);
-                
-                debugLog('OCR-Ergebnis (roh): ' + text);
-                
-                await worker.terminate();
-                
-                // Progress auf 100%
-                document.getElementById('progressFill').style.width = '100%';
-                document.getElementById('progressText').textContent = 'Texterkennung abgeschlossen!';
-                
-                // Text verarbeiten
-                processOCRText(text);
-                
-            } catch (error) {
-                debugLog('OCR Fehler: ' + error.message);
-                debugLog('Error Stack: ' + error.stack);
-                
-                // Fallback: Manuelle Eingabe anbieten
-                document.getElementById('progressSection').classList.add('hidden');
-                
-                showError('Texterkennung der handgeschriebenen IDs war nicht erfolgreich. ' + 
-                         'Das ist normal bei Bleistift-Handschrift!\n\n' +
-                         '💡 Tipp: Nutzen Sie die manuelle Eingabe oder probieren Sie ein schärferes Foto bei besserer Beleuchtung.');
-                
-                // Sofort manuelle Eingabe fokussieren
-                setTimeout(() => {
-                    document.getElementById('manualId').focus();
-                    document.getElementById('manualId').placeholder = 'z.B. ZA1234 (aus dem Foto abtippen)';
-                }, 1000);
-            }
-        }
-        
-        // Fallback: Manuelle Eingabe-Dialog
-        function showManualInputDialog() {
-            if (confirm('OCR funktioniert nicht. Möchten Sie die IDs stattdessen manuell eingeben?')) {
-                document.getElementById('manualId').focus();
-            }
-        }
-
-        // OCR Text verarbeiten mit verbesserter Mustererkennung
-        function processOCRText(text) {
-            debugLog('Verarbeite OCR-Text: ' + text);
-            
-            // Verschiedene Muster für Buch-IDs probieren
-            const patterns = [
-                /[A-Z]{1,3}\d{3,5}/g,           // Standard: ZA1234
-                /[A-Z]{1,2}\s*\d{3,5}/g,        // Mit Leerzeichen: ZA 1234
-                /[A-Z]\s*[A-Z]\s*\d{3,5}/g,     // Getrennte Buchstaben: Z A 1234
-                /\b[A-Z]{1,3}\d{3,5}\b/g,       // Wortgrenzen
-                /[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{1,3}[0123456789]{3,5}/g // Nur erlaubte Zeichen
-            ];
-            
-            let allMatches = [];
-            
-            // Alle Muster durchprobieren
-            patterns.forEach(pattern => {
-                const matches = text.match(pattern) || [];
-                allMatches = allMatches.concat(matches);
-            });
-            
-            // Text nach Zeilen aufteilen und jede Zeile einzeln analysieren
-            const lines = text.split(/[\n\r]+/);
-            lines.forEach(line => {
-                // Aufräumen: nur Buchstaben und Zahlen behalten
-                const cleaned = line.replace(/[^A-Z0-9\s]/g, '').trim();
-                if (cleaned.length >= 4 && cleaned.length <= 8) {
-                    // Könnte eine ID sein
-                    const hasLetter = /[A-Z]/.test(cleaned);
-                    const hasNumber = /[0-9]/.test(cleaned);
-                    if (hasLetter && hasNumber) {
-                        allMatches.push(cleaned.replace(/\s/g, ''));
-                    }
-                }
-            });
-            
-            // Duplikate entfernen und sortieren
-            detectedIds = [...new Set(allMatches)]
-                .filter(id => id.length >= 4 && id.length <= 8)
-                .sort();
-            
-            debugLog('Gefundene potenzielle IDs: ' + JSON.stringify(detectedIds));
-            
-            document.getElementById('progressSection').classList.add('hidden');
-            
-            if (detectedIds.length > 0) {
-                renderDetectedIds();
-                document.getElementById('detectedIds').classList.remove('hidden');
-                showSuccess(`${detectedIds.length} mögliche Buch-IDs gefunden! Bitte prüfen und korrigieren Sie diese.`);
-            } else {
-                showError('❌ Keine erkennbaren Buch-IDs im Foto gefunden.\n\n' +
-                         '💡 Tipps für bessere Ergebnisse:\n' +
-                         '• Bessere Beleuchtung verwenden\n' +
-                         '• Foto schärfer machen\n' +
-                         '• IDs einzeln großformatig fotografieren\n' +
-                         '• Manuelle Eingabe nutzen');
-                
-                // Manuelle Eingabe fokussieren
-                setTimeout(() => {
-                    document.getElementById('manualId').focus();
-                    document.getElementById('manualId').placeholder = 'IDs aus dem Foto hier eingeben...';
-                }, 1000);
-            }
-        }
-
-        // Erkannte IDs anzeigen
-        function renderDetectedIds() {
-            const container = document.getElementById('idList');
-            container.innerHTML = '';
-            
-            detectedIds.forEach((id, index) => {
-                const item = document.createElement('div');
-                item.className = 'id-item';
-                item.innerHTML = `
-                    <input type="text" class="id-input" value="${id}" 
-                           onchange="detectedIds[${index}] = this.value">
-                    <button class="delete-btn" onclick="removeDetectedId(${index})">❌</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // Erkannte ID löschen
-        function removeDetectedId(index) {
-            detectedIds.splice(index, 1);
-            renderDetectedIds();
-        }
-
-        // Erkannte IDs speichern
-        function saveDetectedIds() {
-            if (!currentLocationCode) {
-                showError('Bitte wählen Sie zuerst einen Standort aus');
+                showError('❌ Bitte wählen Sie zuerst einen Standort aus');
                 return;
             }
             
-            const validIds = detectedIds.filter(id => id.trim().length > 0);
-            
-            validIds.forEach(id => {
-                addToInventory(id.trim(), currentLocationCode);
-            });
-            
-            if (validIds.length > 0) {
-                showSuccess(`${validIds.length} Bücher zu ${currentLocationCode} hinzugefügt`);
-                detectedIds = [];
-                document.getElementById('detectedIds').classList.add('hidden');
-            }
-        }
-
-        // Manuelle ID hinzufügen
-        function addManualId() {
-            const input = document.getElementById('manualId');
-            const id = input.value.trim().toUpperCase();
-            
-            if (!currentLocationCode) {
-                showError('Bitte wählen Sie zuerst einen Standort aus');
+            if (!prefix) {
+                showError('❌ Bitte wählen Sie die Buchstabenkombination aus');
+                document.getElementById('bookPrefix').focus();
                 return;
             }
             
-            if (!id) {
-                showError('Bitte geben Sie eine Buch-ID ein');
+            if (!number) {
+                showError('❌ Bitte geben Sie die Zahlen ein');
+                document.getElementById('bookNumber').focus();
                 return;
             }
             
-            addToInventory(id, currentLocationCode);
-            input.value = '';
-            showSuccess(`Buch ${id} zu ${currentLocationCode} hinzugefügt`);
+            // Zahlen validieren
+            if (!/^\d{3,5}$/.test(number)) {
+                showError('❌ Zahlen müssen 3-5 Ziffern enthalten (z.B. 1234)');
+                document.getElementById('bookNumber').focus();
+                return;
+            }
+            
+            const bookId = prefix + number;
+            
+            // Zu Inventar hinzufügen
+            addToInventory(bookId, currentLocationCode);
+            
+            // Als letztes hinzugefügtes Buch merken
+            lastAddedBook = bookId;
+            document.getElementById('undoBtn').style.display = 'inline-block';
+            
+            // Eingabe zurücksetzen (nur Zahlen)
+            document.getElementById('bookNumber').value = '';
+            document.getElementById('bookNumber').focus();
+            
+            showSuccess(`✅ Buch ${bookId} zu ${currentLocationCode} hinzugefügt`);
         }
 
-        // Präfix zurücksetzen für neuen Buchstabentyp
-        function resetPrefix() {
+        // Letztes Buch rückgängig machen
+        function undoLastBook() {
+            if (!lastAddedBook) return;
+            
+            if (confirm(`Letztes Buch "${lastAddedBook}" rückgängig machen?`)) {
+                inventory = inventory.filter(item => item.bookId !== lastAddedBook);
+                saveInventory();
+                updateStats();
+                renderInventory();
+                showSuccess(`↩️ Buch ${lastAddedBook} rückgängig gemacht`);
+                
+                lastAddedBook = null;
+                document.getElementById('undoBtn').style.display = 'none';
+            }
+        }
+
+        // Eingabefelder zurücksetzen
+        function resetForm() {
             document.getElementById('bookPrefix').value = '';
             document.getElementById('bookNumber').value = '';
             document.getElementById('bookPrefix').focus();
-            showSuccess('💡 Wählen Sie einen neuen Buchstaben-Präfix aus');
+            showSuccess('🔄 Eingabefelder zurückgesetzt');
         }
 
         // Zu Bestand hinzufügen
         function addToInventory(bookId, location) {
             // Prüfen ob bereits vorhanden
-            const exists = inventory.find(item => item.bookId === bookId);
-            if (exists) {
-                if (confirm(`Buch ${bookId} ist bereits erfasst bei ${exists.location}. Standort überschreiben?`)) {
-                    exists.location = location;
-                    exists.timestamp = new Date().toISOString();
+            const existingIndex = inventory.findIndex(item => item.bookId === bookId);
+            
+            if (existingIndex >= 0) {
+                if (confirm(`Buch ${bookId} ist bereits erfasst bei ${inventory[existingIndex].location}. Standort überschreiben?`)) {
+                    inventory[existingIndex].location = location;
+                    inventory[existingIndex].timestamp = new Date().toISOString();
                 }
             } else {
                 inventory.push({
@@ -858,7 +470,7 @@
         // Aktueller Standort laden
         function loadCurrentLocation() {
             const saved = localStorage.getItem('currentLocation');
-            if (saved) {
+            if (saved && saved.length === 7) {
                 currentLocationCode = saved;
                 const shelf = saved.substr(0, 4);
                 const compartment = saved.substr(4, 3);
@@ -883,7 +495,7 @@
             const container = document.getElementById('inventoryList');
             
             if (inventory.length === 0) {
-                container.innerHTML = '<p class="loading">Noch keine Bücher erfasst...</p>';
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>';
                 return;
             }
             
@@ -905,34 +517,29 @@
                         <strong>${item.bookId}</strong><br>
                         <small>${new Date(item.timestamp).toLocaleDateString('de-DE')}</small>
                     </div>
-                    <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span class="location-badge">${item.location}</span>
-                        <button class="delete-btn" onclick="removeFromInventory(${index})" 
-                                style="margin-left: 0.5rem;">❌</button>
+                        <button class="delete-btn" onclick="removeBook('${item.bookId}')">❌</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // Aus Bestand entfernen
-        function removeFromInventory(index) {
-            const sorted = [...inventory].sort((a, b) => {
-                if (a.location === b.location) {
-                    return a.bookId.localeCompare(b.bookId);
-                }
-                return a.location.localeCompare(b.location);
-            });
-            
-            const item = sorted[index];
-            if (confirm(`Buch ${item.bookId} aus der Liste entfernen?`)) {
-                const originalIndex = inventory.findIndex(inv => 
-                    inv.bookId === item.bookId && inv.location === item.location
-                );
-                inventory.splice(originalIndex, 1);
+        // Buch entfernen
+        function removeBook(bookId) {
+            if (confirm(`Buch ${bookId} aus der Liste entfernen?`)) {
+                inventory = inventory.filter(item => item.bookId !== bookId);
                 saveInventory();
                 updateStats();
                 renderInventory();
+                showSuccess(`🗑️ Buch ${bookId} entfernt`);
+                
+                // Undo-Button ausblenden wenn das zuletzt hinzugefügte Buch gelöscht wurde
+                if (lastAddedBook === bookId) {
+                    lastAddedBook = null;
+                    document.getElementById('undoBtn').style.display = 'none';
+                }
             }
         }
 
@@ -961,7 +568,7 @@
             link.download = `buchbestand_neuindexierung_${new Date().toISOString().split('T')[0]}.csv`;
             link.click();
             
-            showSuccess('CSV-Datei heruntergeladen');
+            showSuccess('📊 CSV-Datei heruntergeladen');
         }
 
         // Alle Daten löschen
@@ -971,11 +578,11 @@
                 localStorage.removeItem('bookInventory');
                 updateStats();
                 renderInventory();
-                showSuccess('Alle Daten gelöscht');
+                showSuccess('🗑️ Alle Daten gelöscht');
             }
         }
 
-        // Hilfsfunktionen für Nachrichten
+        // Nachrichten anzeigen
         function showError(message) {
             showMessage(message, 'error');
         }
@@ -994,12 +601,12 @@
             
             document.querySelector('.container').insertBefore(div, document.querySelector('.stats'));
             
-            // Nach 5 Sekunden entfernen
+            // Nach 4 Sekunden entfernen
             setTimeout(() => {
                 if (div.parentNode) {
                     div.parentNode.removeChild(div);
                 }
-            }, 5000);
+            }, 4000);
         }
     </script>
 </body>
