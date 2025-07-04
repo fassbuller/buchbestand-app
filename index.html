@@ -423,7 +423,6 @@
             </div>
             <div style="margin-top: 1rem;">
                 <button class="btn btn-success" onclick="exportByEmail()">📧 Per E-Mail versenden</button>
-                <button class="btn btn-small" onclick="toggleEmailConfig()" style="background: #f39c12;">⚙️ E-Mail Einstellungen</button>
                 <button class="btn" onclick="exportData()">💾 CSV herunterladen</button>
                 <button class="btn" onclick="clearAll()">🗑️ Alle Daten löschen</button>
             </div>
@@ -435,14 +434,13 @@
         let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
         let currentLocationCode = '';
         let lastAddedBook = null;
-        let emailSettings = JSON.parse(localStorage.getItem('emailSettings') || '{}');
+        const EMAIL_RECIPIENT = 'buch@hennwack.com';
 
         // App initialisieren
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
             renderInventory();
             loadCurrentLocation();
-            loadEmailSettings();
             
             // Enter-Taste Unterstützung
             document.getElementById('bookNumber').addEventListener('keypress', function(e) {
@@ -458,19 +456,6 @@
                 }
             });
         });
-
-        // E-Mail-Einstellungen laden
-        function loadEmailSettings() {
-            if (emailSettings.recipient) {
-                document.getElementById('emailRecipient').value = emailSettings.recipient;
-            }
-            if (emailSettings.cc) {
-                document.getElementById('emailCC').value = emailSettings.cc;
-            }
-            if (emailSettings.note) {
-                document.getElementById('emailNote').value = emailSettings.note;
-            }
-        }
 
         // Aktueller Standort setzen
         function setCurrentLocation() {
@@ -572,6 +557,78 @@
             document.getElementById('bookNumber').value = '';
             document.getElementById('bookPrefix').focus();
             showSuccess('🔄 Eingabefelder zurückgesetzt');
+        }
+
+        // Per E-Mail exportieren
+        function exportByEmail() {
+            if (inventory.length === 0) {
+                showError('Keine Daten zum Exportieren vorhanden');
+                return;
+            }
+
+            // Aktuelles Datum für Betreff
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('de-DE');
+            const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            
+            // Automatischer Betreff
+            const subject = `Buchbestand Neuindexierung - ${inventory.length} Bücher - ${dateStr} ${timeStr}`;
+
+            // CSV-Daten für E-Mail Body erstellen
+            const csvData = createEmailBody();
+
+            // mailto-Link erstellen
+            const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(csvData)}`;
+
+            // E-Mail-Programm öffnen
+            try {
+                window.location.href = mailtoLink;
+                showSuccess(`📧 E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
+            } catch (error) {
+                showError('❌ Fehler beim Öffnen des E-Mail-Programms. Bitte kopieren Sie die Daten manuell.');
+            }
+        }
+
+        // E-Mail Body erstellen
+        function createEmailBody() {
+            let body = '';
+            
+            // Intro
+            body += 'Hallo,\n\n';
+            body += `anbei die Buchbestand-Neuindexierung mit ${inventory.length} erfassten Büchern.\n\n`;
+            
+            // Statistiken
+            const locations = [...new Set(inventory.map(item => item.location))];
+            body += `📊 Übersicht:\n`;
+            body += `• ${inventory.length} Bücher erfasst\n`;
+            body += `• ${locations.length} verschiedene Standorte\n`;
+            body += `• Erfasst am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
+            
+            // CSV-Daten als Tabelle
+            body += `📋 Buchbestand-Daten:\n\n`;
+            body += 'Buch-ID\t\tNeuer Standort\t\tErfasst am\n';
+            body += ''.padEnd(60, '-') + '\n';
+            
+            // Nach Standort sortieren
+            const sorted = [...inventory].sort((a, b) => {
+                if (a.location === b.location) {
+                    return a.bookId.localeCompare(b.bookId);
+                }
+                return a.location.localeCompare(b.location);
+            });
+            
+            sorted.forEach(item => {
+                const bookId = item.bookId.padEnd(12);
+                const location = item.location.padEnd(15);
+                const date = new Date(item.timestamp).toLocaleDateString('de-DE');
+                body += `${bookId}\t${location}\t${date}\n`;
+            });
+            
+            body += '\n\n';
+            body += '💾 Die Daten können auch als CSV-Datei heruntergeladen werden.\n\n';
+            body += 'Viele Grüße\n';
+            
+            return body;
         }
 
         // Zu Bestand hinzufügen
