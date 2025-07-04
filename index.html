@@ -351,30 +351,20 @@
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // Sheet erstellen oder öffnen
-    let spreadsheet;
-    let sheet;
+    // IHR SPEZIFISCHES GOOGLE SHEET
+    const SPREADSHEET_ID = '15DSlw48yNec16FXDj1QESX8zmDivS5JLvNhCBRuQsTw';
     
-    try {
-      // Versuche vorhandenes Sheet zu finden
-      const files = DriveApp.getFilesByName('Buchbestand Neuindexierung');
-      if (files.hasNext()) {
-        spreadsheet = SpreadsheetApp.open(files.next());
-      } else {
-        // Neues Sheet erstellen
-        spreadsheet = SpreadsheetApp.create('Buchbestand Neuindexierung');
-      }
-      sheet = spreadsheet.getActiveSheet();
-    } catch (err) {
-      // Fallback: Neues Sheet erstellen
-      spreadsheet = SpreadsheetApp.create('Buchbestand Neuindexierung');
-      sheet = spreadsheet.getActiveSheet();
-    }
+    // Sheet öffnen
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = spreadsheet.getActiveSheet();
     
-    // Header hinzufügen wenn leer
-    if (sheet.getLastRow() === 0) {
+    // Header hinzufügen wenn leer oder falsch
+    if (sheet.getLastRow() === 0 || sheet.getRange(1, 1).getValue() !== 'Buch_ID') {
+      sheet.clear(); // Alles löschen
       sheet.getRange(1, 1, 1, 3).setValues([['Buch_ID', 'Neuer_Standort', 'Erfasst_am']]);
       sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
+      sheet.getRange(1, 1, 1, 3).setBackground('#4285f4');
+      sheet.getRange(1, 1, 1, 3).setFontColor('white');
     }
     
     // Daten verarbeiten
@@ -392,10 +382,23 @@
     // Neue Daten einfügen
     if (values.length > 0) {
       sheet.getRange(2, 1, values.length, 3).setValues(values);
+      
+      // Formatierung
+      const dataRange = sheet.getRange(2, 1, values.length, 3);
+      dataRange.setBorder(true, true, true, true, true, true);
+      
+      // Spalte A (Buch-ID) fett
+      sheet.getRange(2, 1, values.length, 1).setFontWeight('bold');
+      
+      // Spalte B (Standort) mit Hintergrundfarbe
+      sheet.getRange(2, 2, values.length, 1).setBackground('#e3f2fd');
     }
     
     // Auto-resize columns
     sheet.autoResizeColumns(1, 3);
+    
+    // Freeze first row
+    sheet.setFrozenRows(1);
     
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
@@ -419,9 +422,8 @@
                 <p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>
             </div>
             <div style="margin-top: 1rem;">
-                <button class="btn btn-success" onclick="exportToGoogleSheetsDirect()" id="directExportBtn">📊 Direkt zu Google Sheets</button>
-                <button class="btn" onclick="toggleSetup()" id="setupBtn">⚙️ Google Sheets Setup</button>
-                <button class="btn" onclick="exportToGoogleSheets()">📋 Copy & Paste Export</button>
+                <button class="btn btn-success" onclick="exportByEmail()">📧 Per E-Mail versenden</button>
+                <button class="btn btn-small" onclick="toggleEmailConfig()" style="background: #f39c12;">⚙️ E-Mail Einstellungen</button>
                 <button class="btn" onclick="exportData()">💾 CSV herunterladen</button>
                 <button class="btn" onclick="clearAll()">🗑️ Alle Daten löschen</button>
             </div>
@@ -433,14 +435,14 @@
         let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
         let currentLocationCode = '';
         let lastAddedBook = null;
-        let webAppUrl = localStorage.getItem('webAppUrl') || '';
+        let emailSettings = JSON.parse(localStorage.getItem('emailSettings') || '{}');
 
         // App initialisieren
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
             renderInventory();
             loadCurrentLocation();
-            updateExportButtons();
+            loadEmailSettings();
             
             // Enter-Taste Unterstützung
             document.getElementById('bookNumber').addEventListener('keypress', function(e) {
@@ -457,18 +459,16 @@
             });
         });
 
-        // Export-Buttons je nach Setup anzeigen
-        function updateExportButtons() {
-            const directBtn = document.getElementById('directExportBtn');
-            const setupBtn = document.getElementById('setupBtn');
-            
-            if (webAppUrl) {
-                directBtn.style.display = 'inline-block';
-                setupBtn.innerHTML = '⚙️ Setup ändern';
-                directBtn.style.background = '#27ae60';
-            } else {
-                directBtn.style.display = 'none';
-                setupBtn.innerHTML = '⚙️ Google Sheets Setup';
+        // E-Mail-Einstellungen laden
+        function loadEmailSettings() {
+            if (emailSettings.recipient) {
+                document.getElementById('emailRecipient').value = emailSettings.recipient;
+            }
+            if (emailSettings.cc) {
+                document.getElementById('emailCC').value = emailSettings.cc;
+            }
+            if (emailSettings.note) {
+                document.getElementById('emailNote').value = emailSettings.note;
             }
         }
 
