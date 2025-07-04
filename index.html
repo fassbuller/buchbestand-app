@@ -566,6 +566,41 @@
                 return;
             }
 
+            // 1. CSV-Datei automatisch herunterladen
+            downloadCSV();
+
+            // 2. Nach kurzer Verzögerung E-Mail öffnen
+            setTimeout(() => {
+                openEmailWithAttachmentNote();
+            }, 1000);
+        }
+
+        // CSV herunterladen (interne Funktion)
+        function downloadCSV() {
+            // CSV erstellen
+            const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am'];
+            const csvContent = [
+                headers.join(','),
+                ...inventory.map(item => [
+                    item.bookId,
+                    item.location,
+                    new Date(item.timestamp).toLocaleDateString('de-DE')
+                ].join(','))
+            ].join('\n');
+            
+            // Download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            
+            // Dateiname mit Datum
+            const dateStr = new Date().toISOString().split('T')[0];
+            link.download = `buchbestand_neuindexierung_${dateStr}.csv`;
+            link.click();
+        }
+
+        // E-Mail mit Anhang-Hinweis öffnen
+        function openEmailWithAttachmentNote() {
             // Aktuelles Datum für Betreff
             const now = new Date();
             const dateStr = now.toLocaleDateString('de-DE');
@@ -574,28 +609,32 @@
             // Automatischer Betreff
             const subject = `Buchbestand Neuindexierung - ${inventory.length} Bücher - ${dateStr} ${timeStr}`;
 
-            // CSV-Daten für E-Mail Body erstellen
-            const csvData = createEmailBody();
+            // E-Mail Body mit Anhang-Hinweis
+            const emailBody = createEmailBodyWithAttachment();
 
             // mailto-Link erstellen
-            const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(csvData)}`;
+            const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
             // E-Mail-Programm öffnen
             try {
                 window.location.href = mailtoLink;
-                showSuccess(`📧 E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
+                showSuccess(`📧 CSV heruntergeladen und E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
             } catch (error) {
-                showError('❌ Fehler beim Öffnen des E-Mail-Programms. Bitte kopieren Sie die Daten manuell.');
+                showError('❌ Fehler beim Öffnen des E-Mail-Programms.');
             }
         }
 
-        // E-Mail Body erstellen
-        function createEmailBody() {
+        // E-Mail Body mit Anhang-Hinweis erstellen
+        function createEmailBodyWithAttachment() {
             let body = '';
             
             // Intro
             body += 'Hallo,\n\n';
             body += `anbei die Buchbestand-Neuindexierung mit ${inventory.length} erfassten Büchern.\n\n`;
+            
+            // Anhang-Hinweis
+            body += '📎 WICHTIG: Die CSV-Datei wurde automatisch heruntergeladen.\n';
+            body += 'Bitte hängen Sie die Datei "buchbestand_neuindexierung_[DATUM].csv" an diese E-Mail an.\n\n';
             
             // Statistiken
             const locations = [...new Set(inventory.map(item => item.location))];
@@ -604,12 +643,9 @@
             body += `• ${locations.length} verschiedene Standorte\n`;
             body += `• Erfasst am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
             
-            // CSV-Daten als Tabelle
-            body += `📋 Buchbestand-Daten:\n\n`;
-            body += 'Buch-ID\t\tNeuer Standort\t\tErfasst am\n';
-            body += ''.padEnd(60, '-') + '\n';
+            // Kurze Datenvorschau (erste 5 Bücher)
+            body += `📋 Datenvorschau (erste 5 Bücher):\n\n`;
             
-            // Nach Standort sortieren
             const sorted = [...inventory].sort((a, b) => {
                 if (a.location === b.location) {
                     return a.bookId.localeCompare(b.bookId);
@@ -617,15 +653,16 @@
                 return a.location.localeCompare(b.location);
             });
             
-            sorted.forEach(item => {
-                const bookId = item.bookId.padEnd(12);
-                const location = item.location.padEnd(15);
-                const date = new Date(item.timestamp).toLocaleDateString('de-DE');
-                body += `${bookId}\t${location}\t${date}\n`;
+            const preview = sorted.slice(0, 5);
+            preview.forEach(item => {
+                body += `• ${item.bookId} → ${item.location}\n`;
             });
             
-            body += '\n\n';
-            body += '💾 Die Daten können auch als CSV-Datei heruntergeladen werden.\n\n';
+            if (inventory.length > 5) {
+                body += `... und ${inventory.length - 5} weitere Bücher (siehe CSV-Datei)\n`;
+            }
+            
+            body += '\n💾 Vollständige Daten in der angehängten CSV-Datei.\n\n';
             body += 'Viele Grüße\n';
             
             return body;
