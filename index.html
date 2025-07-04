@@ -272,7 +272,11 @@
                         <option value="ZD">ZD</option>
                         <option value="ZE">ZE</option>
                         <option value="ZF">ZF</option>
+                        <option value="MANUAL">✏️ Manuell ergänzen</option>
                     </select>
+                    <input type="text" id="manualPrefix" placeholder="z.B. ZG, H, ABC..." 
+                           style="margin-top: 0.5rem; display: none; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;" 
+                           maxlength="4">
                 </div>
                 <div class="form-group">
                     <label for="bookNumber">Zahlen:</label>
@@ -454,16 +458,39 @@
             
             // Auto-Fokus bei Präfix-Wahl (mit Verzögerung für mobile Geräte)
             document.getElementById('bookPrefix').addEventListener('change', function() {
-                if (this.value) {
-                    // Kurze Verzögerung für stabile Tastatur-Anzeige
+                const manualField = document.getElementById('manualPrefix');
+                
+                if (this.value === 'MANUAL') {
+                    // Manuelles Textfeld anzeigen und fokussieren
+                    manualField.style.display = 'block';
                     setTimeout(() => {
-                        const numberField = document.getElementById('bookNumber');
-                        numberField.focus();
-                        // Für iOS: Cursor ans Ende setzen
-                        if (numberField.setSelectionRange) {
-                            numberField.setSelectionRange(numberField.value.length, numberField.value.length);
-                        }
+                        manualField.focus();
+                        manualField.value = '';
                     }, 150);
+                } else {
+                    // Manuelles Textfeld verstecken
+                    manualField.style.display = 'none';
+                    manualField.value = '';
+                    
+                    if (this.value) {
+                        // Normaler Auto-Fokus auf Zahlenfeld
+                        setTimeout(() => {
+                            const numberField = document.getElementById('bookNumber');
+                            numberField.focus();
+                            if (numberField.setSelectionRange) {
+                                numberField.setSelectionRange(numberField.value.length, numberField.value.length);
+                            }
+                        }, 150);
+                    }
+                }
+            });
+            
+            // Enter-Taste auch für manuelles Präfix-Feld
+            document.getElementById('manualPrefix').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (this.value.trim()) {
+                        document.getElementById('bookNumber').focus();
+                    }
                 }
             });
         });
@@ -502,7 +529,8 @@
 
         // Buch hinzufügen
         function addBook() {
-            const prefix = document.getElementById('bookPrefix').value;
+            const prefixSelect = document.getElementById('bookPrefix').value;
+            const manualPrefix = document.getElementById('manualPrefix').value.trim().toUpperCase();
             const number = document.getElementById('bookNumber').value.trim();
             
             // Validierungen
@@ -511,10 +539,28 @@
                 return;
             }
             
-            if (!prefix) {
-                showError('❌ Bitte wählen Sie die Buchstabenkombination aus');
-                document.getElementById('bookPrefix').focus();
-                return;
+            // Präfix bestimmen (Dropdown oder manuell)
+            let prefix = '';
+            if (prefixSelect === 'MANUAL') {
+                if (!manualPrefix) {
+                    showError('❌ Bitte geben Sie die Buchstabenkombination ein');
+                    document.getElementById('manualPrefix').focus();
+                    return;
+                }
+                // Validierung für manuelles Präfix (nur Buchstaben, 1-4 Zeichen)
+                if (!/^[A-Z]{1,4}$/i.test(manualPrefix)) {
+                    showError('❌ Buchstabenkombination: nur Buchstaben, 1-4 Zeichen (z.B. ZG, ABC)');
+                    document.getElementById('manualPrefix').focus();
+                    return;
+                }
+                prefix = manualPrefix;
+            } else {
+                if (!prefixSelect) {
+                    showError('❌ Bitte wählen Sie die Buchstabenkombination aus');
+                    document.getElementById('bookPrefix').focus();
+                    return;
+                }
+                prefix = prefixSelect;
             }
             
             if (!number) {
@@ -524,8 +570,8 @@
             }
             
             // Zahlen validieren
-            if (!/^\d{3,5}$/.test(number)) {
-                showError('❌ Zahlen müssen 3-5 Ziffern enthalten (z.B. 1234)');
+            if (!/^\d+$/.test(number)) {
+                showError('❌ Zahlen müssen mindestens 1 Ziffer enthalten (z.B. 5, 123, 1234)');
                 document.getElementById('bookNumber').focus();
                 return;
             }
@@ -566,6 +612,8 @@
         function resetForm() {
             document.getElementById('bookPrefix').value = '';
             document.getElementById('bookNumber').value = '';
+            document.getElementById('manualPrefix').value = '';
+            document.getElementById('manualPrefix').style.display = 'none';
             document.getElementById('bookPrefix').focus();
             showSuccess('🔄 Eingabefelder zurückgesetzt');
         }
