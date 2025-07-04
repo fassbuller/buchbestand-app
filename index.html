@@ -438,9 +438,12 @@
 
         // App initialisieren
         document.addEventListener('DOMContentLoaded', function() {
+            // Erst gespeicherte Daten laden
+            loadCurrentLocation();
+            
+            // Dann Statistiken aktualisieren (zeigt "-" wenn kein Standort)
             updateStats();
             renderInventory();
-            loadCurrentLocation();
             
             // Enter-Taste Unterstützung
             document.getElementById('bookNumber').addEventListener('keypress', function(e) {
@@ -449,10 +452,18 @@
                 }
             });
             
-            // Auto-Fokus bei Präfix-Wahl
+            // Auto-Fokus bei Präfix-Wahl (mit Verzögerung für mobile Geräte)
             document.getElementById('bookPrefix').addEventListener('change', function() {
                 if (this.value) {
-                    document.getElementById('bookNumber').focus();
+                    // Kurze Verzögerung für stabile Tastatur-Anzeige
+                    setTimeout(() => {
+                        const numberField = document.getElementById('bookNumber');
+                        numberField.focus();
+                        // Für iOS: Cursor ans Ende setzen
+                        if (numberField.setSelectionRange) {
+                            numberField.setSelectionRange(numberField.value.length, numberField.value.length);
+                        }
+                    }, 150);
                 }
             });
         });
@@ -566,41 +577,6 @@
                 return;
             }
 
-            // 1. CSV-Datei automatisch herunterladen
-            downloadCSV();
-
-            // 2. Nach kurzer Verzögerung E-Mail öffnen
-            setTimeout(() => {
-                openEmailWithAttachmentNote();
-            }, 1000);
-        }
-
-        // CSV herunterladen (interne Funktion)
-        function downloadCSV() {
-            // CSV erstellen
-            const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am'];
-            const csvContent = [
-                headers.join(','),
-                ...inventory.map(item => [
-                    item.bookId,
-                    item.location,
-                    new Date(item.timestamp).toLocaleDateString('de-DE')
-                ].join(','))
-            ].join('\n');
-            
-            // Download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            
-            // Dateiname mit Datum
-            const dateStr = new Date().toISOString().split('T')[0];
-            link.download = `buchbestand_neuindexierung_${dateStr}.csv`;
-            link.click();
-        }
-
-        // E-Mail mit Anhang-Hinweis öffnen
-        function openEmailWithAttachmentNote() {
             // Aktuelles Datum für Betreff
             const now = new Date();
             const dateStr = now.toLocaleDateString('de-DE');
@@ -609,8 +585,8 @@
             // Automatischer Betreff
             const subject = `Buchbestand Neuindexierung - ${inventory.length} Bücher - ${dateStr} ${timeStr}`;
 
-            // E-Mail Body mit Anhang-Hinweis
-            const emailBody = createEmailBodyWithAttachment();
+            // E-Mail Body mit kopierbaren Daten
+            const emailBody = createCopyableEmailBody();
 
             // mailto-Link erstellen
             const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
@@ -618,23 +594,19 @@
             // E-Mail-Programm öffnen
             try {
                 window.location.href = mailtoLink;
-                showSuccess(`📧 CSV heruntergeladen und E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
+                showSuccess(`📧 E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
             } catch (error) {
                 showError('❌ Fehler beim Öffnen des E-Mail-Programms.');
             }
         }
 
-        // E-Mail Body mit Anhang-Hinweis erstellen
-        function createEmailBodyWithAttachment() {
+        // E-Mail Body mit kopierbaren Tabellendaten erstellen
+        function createCopyableEmailBody() {
             let body = '';
             
             // Intro
             body += 'Hallo,\n\n';
             body += `anbei die Buchbestand-Neuindexierung mit ${inventory.length} erfassten Büchern.\n\n`;
-            
-            // Anhang-Hinweis
-            body += '📎 WICHTIG: Die CSV-Datei wurde automatisch heruntergeladen.\n';
-            body += 'Bitte hängen Sie die Datei "buchbestand_neuindexierung_[DATUM].csv" an diese E-Mail an.\n\n';
             
             // Statistiken
             const locations = [...new Set(inventory.map(item => item.location))];
@@ -643,9 +615,16 @@
             body += `• ${locations.length} verschiedene Standorte\n`;
             body += `• Erfasst am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
             
-            // Kurze Datenvorschau (erste 5 Bücher)
-            body += `📋 Datenvorschau (erste 5 Bücher):\n\n`;
+            // Kopier-Anweisung
+            body += '📋 TABELLENDATEN (zum Kopieren in Excel/Google Sheets):\n';
+            body += 'Markieren Sie die Daten unten und kopieren Sie sie (Strg+C).\n';
+            body += 'In Excel/Sheets: Einfügen (Strg+V) - die Spalten werden automatisch erkannt.\n\n';
+            body += ''.padEnd(70, '-') + '\n';
             
+            // Tab-getrennte Header
+            body += 'Buch_ID\tNeuer_Standort\tErfasst_am\n';
+            
+            // Nach Standort sortieren
             const sorted = [...inventory].sort((a, b) => {
                 if (a.location === b.location) {
                     return a.bookId.localeCompare(b.bookId);
@@ -653,16 +632,16 @@
                 return a.location.localeCompare(b.location);
             });
             
-            const preview = sorted.slice(0, 5);
-            preview.forEach(item => {
-                body += `• ${item.bookId} → ${item.location}\n`;
+            // Tab-getrennte Daten
+            sorted.forEach(item => {
+                const date = new Date(item.timestamp).toLocaleDateString('de-DE');
+                body += `${item.bookId}\t${item.location}\t${date}\n`;
             });
             
-            if (inventory.length > 5) {
-                body += `... und ${inventory.length - 5} weitere Bücher (siehe CSV-Datei)\n`;
-            }
+            body += ''.padEnd(70, '-') + '\n\n';
             
-            body += '\n💾 Vollständige Daten in der angehängten CSV-Datei.\n\n';
+            body += '💡 Tipp: Die Daten sind tab-getrennt formatiert.\n';
+            body += 'Beim Einfügen in Excel/Sheets werden automatisch 3 Spalten erstellt.\n\n';
             body += 'Viele Grüße\n';
             
             return body;
@@ -716,6 +695,7 @@
             const locations = [...new Set(inventory.map(item => item.location))];
             document.getElementById('totalLocations').textContent = locations.length;
             
+            // Aktueller Standort mit explizitem "-" wenn leer
             document.getElementById('currentLocation').textContent = currentLocationCode || '-';
         }
 
