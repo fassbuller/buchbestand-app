@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -11,209 +12,212 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-        }
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f5f5f5;
+        min-height: 100vh;
+    }
 
-        .header {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    .header {
+        background: #2c3e50;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
 
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn:hover {
+        background: #2980b9;
+    }
+
+    .btn-success {
+        background: #27ae60;
+    }
+
+    .btn-success:hover {
+        background: #229954;
+    }
+
+    .btn-small {
+        width: auto;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        margin-left: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .inventory-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .inventory-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .inventory-item:last-child {
+        border-bottom: none;
+    }
+
+    .location-badge {
+        background: #3498db;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #3498db;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .error {
+        background: #fff5f5;
+        color: #e53e3e;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #e53e3e;
+        margin-bottom: 1rem;
+    }
+
+    .success {
+        background: #f0fff4;
+        color: #38a169;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #38a169;
+        margin-bottom: 1rem;
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .tips {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .delete-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+        background: #c0392b;
+    }
+
+    @media (max-width: 600px) {
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1rem;
+            padding: 0.5rem;
         }
-
+        
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-            width: 100%;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-        }
-
-        .btn-success {
-            background: #27ae60;
-        }
-
-        .btn-success:hover {
-            background: #229954;
-        }
-
-        .btn-small {
-            width: auto;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-            margin-bottom: 0;
-        }
-
-        .inventory-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .inventory-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .inventory-item:last-child {
-            border-bottom: none;
-        }
-
-        .location-badge {
-            background: #3498db;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card {
-            background: white;
             padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #3498db;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .error {
-            background: #fff5f5;
-            color: #e53e3e;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #e53e3e;
-            margin-bottom: 1rem;
-        }
-
-        .success {
-            background: #f0fff4;
-            color: #38a169;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #38a169;
-            margin-bottom: 1rem;
         }
 
         .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 1rem;
-            align-items: end;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
         }
+    }
+</style>
+```
 
-        .tips {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #c0392b;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 0.5rem;
-            }
-            
-            .card {
-                padding: 1rem;
-            }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="header">
@@ -221,936 +225,968 @@
         <p>AntiquarPC Standort-Update</p>
     </div>
 
-    <div class="container">
-        <!-- Statistiken -->
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalBooks">0</div>
-                <div class="stat-label">Bücher erfasst</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalLocations">0</div>
-                <div class="stat-label">Standorte</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="currentLocation">-</div>
-                <div class="stat-label">Aktueller Standort</div>
-            </div>
+```
+<div class="container">
+    <!-- Statistiken -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="totalBooks">0</div>
+            <div class="stat-label">Bücher erfasst</div>
         </div>
-
-        <!-- Standort eingeben -->
-        <div class="card">
-            <h2>🏷️ Neuer Standort</h2>
-            <div class="input-grid">
-                <div class="form-group">
-                    <label for="shelfNumber">Regal (z.B. R001):</label>
-                    <input type="text" id="shelfNumber" placeholder="R001" maxlength="4">
-                </div>
-                <div class="form-group">
-                    <label for="compartmentNumber">Fach (z.B. F02):</label>
-                    <input type="text" id="compartmentNumber" placeholder="F02" maxlength="3">
-                </div>
-            </div>
-            <button class="btn" onclick="setCurrentLocation()">✅ Standort bestätigen</button>
+        <div class="stat-card">
+            <div class="stat-number" id="totalLocations">0</div>
+            <div class="stat-label">Standorte</div>
         </div>
-
-        <!-- Buch-ID eingeben -->
-        <div class="card">
-            <h2>✍️ Buch-ID eingeben</h2>
-            <div class="input-grid">
-                <div class="form-group">
-                    <label for="bookPrefix">Buchstaben:</label>
-                    <select id="bookPrefix" style="font-size: 1.2rem; font-weight: bold;">
-                        <option value="">Wählen...</option>
-                        <option value="Stl1">Stl1</option>
-                        <option value="Stl2">Stl2</option>
-                        <option value="Stlg">Stlg</option>
-                        <option value="Z">Z</option>
-                        <option value="ZA">ZA</option>
-                        <option value="ZB">ZB</option>
-                        <option value="ZC">ZC</option>
-                        <option value="ZD">ZD</option>
-                        <option value="ZE">ZE</option>
-                        <option value="ZF">ZF</option>
-                        <option value="MANUAL">✏️ Manuell ergänzen</option>
-                    </select>
-                    <input type="text" id="manualPrefix" placeholder="z.B. ZG, H, ABC..." 
-                           style="margin-top: 0.5rem; display: none; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;" 
-                           maxlength="4">
-                </div>
-                <div class="form-group">
-                    <label for="bookNumber">Zahlen:</label>
-                    <input type="number" id="bookNumber" placeholder="1234" 
-                           inputmode="numeric" pattern="[0-9]*" 
-                           style="font-size: 1.2rem; font-weight: bold;">
-                </div>
-            </div>
-            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                <button class="btn btn-success" onclick="addBook()">📖 Buch hinzufügen</button>
-                <button class="btn btn-small" onclick="resetForm()">🔄 Reset</button>
-                <button class="btn btn-small" onclick="undoLastBook()" id="undoBtn" style="display: none; background: #f39c12;">↩️ Rückgängig</button>
-            </div>
-            
-            <div class="tips">
-                <h4>📝 Schnell-Eingabe:</h4>
-                <p style="margin: 0.5rem 0; color: #666;">
-                    1. <strong>Buchstaben</strong> aus Dropdown wählen<br>
-                    2. <strong>Zahlen</strong> eintippen<br>
-                    3. <strong>Enter</strong> drücken oder Button klicken
-                </p>
-            </div>
-        </div>
-
-        <!-- Google Sheets Setup -->
-        <div class="card" id="sheetsSetup" style="display: none;">
-            <h2>⚙️ Google Sheets Setup</h2>
-            <p style="margin-bottom: 1rem; color: #666;">
-                Für direkten Export benötigen Sie eine einmalige Einrichtung:
-            </p>
-            
-            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <h4>📝 Schritt-für-Schritt Setup:</h4>
-                <ol style="margin: 0.5rem 0 0 1.5rem; color: #666;">
-                    <li>Öffnen Sie <a href="https://script.google.com" target="_blank">script.google.com</a></li>
-                    <li>Klicken Sie <strong>"Neues Projekt"</strong></li>
-                    <li>Kopieren Sie den Code unten und ersetzen Sie den Standard-Code</li>
-                    <li>Klicken Sie <strong>"Speichern"</strong> (Disketten-Symbol)</li>
-                    <li>Klicken Sie <strong>"Bereitstellen"</strong> → <strong>"Neue Bereitstellung"</strong></li>
-                    <li>Bei "Typ" wählen: <strong>"Web-App"</strong></li>
-                    <li><strong>WICHTIG:</strong> "Zugriff haben" → <strong>"Jeder"</strong> (nicht "Nur ich"!)</li>
-                    <li>Klicken Sie <strong>"Bereitstellen"</strong></li>
-                    <li>Bei Berechtigung: <strong>"Zugriff prüfen"</strong> → <strong>"Erweitert"</strong> → <strong>"Zu [Projektname] wechseln"</strong></li>
-                    <li>Kopieren Sie die <strong>Web-App URL</strong> hierher</li>
-                </ol>
-            </div>
-            
-            <div class="form-group">
-                <label for="webAppUrl">Google Apps Script Web-App URL:</label>
-                <input type="url" id="webAppUrl" placeholder="https://script.google.com/macros/s/...">
-            </div>
-            
-            <button class="btn btn-success" onclick="saveWebAppUrl()">✅ URL speichern</button>
-            <button class="btn" onclick="testConnection()" style="background: #f39c12;">🔍 Verbindung testen</button>
-            <button class="btn" onclick="toggleSetup()">❌ Abbrechen</button>
-            
-            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-                <h4 style="color: #856404;">⚠️ Häufige Probleme:</h4>
-                <ul style="margin: 0.5rem 0 0 1.5rem; color: #856404;">
-                    <li><strong>"Load failed"</strong> → Zugriff ist auf "Nur ich" statt "Jeder"</li>
-                    <li><strong>404 Fehler</strong> → Falsche URL oder nicht bereitgestellt</li>
-                    <li><strong>403 Fehler</strong> → Berechtigung nicht erteilt</li>
-                    <li><strong>Bei erster Nutzung:</strong> "Zugriff prüfen" → "Erweitert" → "Zu [Projekt] wechseln"</li>
-                </ul>
-            </div>
-                <h4>📋 Apps Script Code:</h4>
-                <textarea readonly style="width: 100%; height: 300px; font-family: monospace; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem;" onclick="this.select()">function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    
-    // Test-Request
-    if (data.test) {
-      return ContentService.createTextOutput(JSON.stringify({
-        success: true,
-        message: 'Test erfolgreich'
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // IHR SPEZIFISCHES GOOGLE SHEET
-    const SPREADSHEET_ID = '15DSlw48yNec16FXDj1QESX8zmDivS5JLvNhCBRuQsTw';
-    
-    // Sheet öffnen
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    let sheet = spreadsheet.getActiveSheet();
-    
-    // Header hinzufügen wenn leer oder falsch
-    if (sheet.getLastRow() === 0 || sheet.getRange(1, 1).getValue() !== 'Buch_ID') {
-      sheet.clear(); // Alles löschen
-      sheet.getRange(1, 1, 1, 3).setValues([['Buch_ID', 'Neuer_Standort', 'Erfasst_am']]);
-      sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
-      sheet.getRange(1, 1, 1, 3).setBackground('#4285f4');
-      sheet.getRange(1, 1, 1, 3).setFontColor('white');
-    }
-    
-    // Daten verarbeiten
-    const values = data.inventory.map(item => [
-      item.bookId,
-      item.location,
-      new Date(item.timestamp).toLocaleDateString('de-DE')
-    ]);
-    
-    // Alte Daten löschen (außer Header)
-    if (sheet.getLastRow() > 1) {
-      sheet.deleteRows(2, sheet.getLastRow() - 1);
-    }
-    
-    // Neue Daten einfügen
-    if (values.length > 0) {
-      sheet.getRange(2, 1, values.length, 3).setValues(values);
-      
-      // Formatierung
-      const dataRange = sheet.getRange(2, 1, values.length, 3);
-      dataRange.setBorder(true, true, true, true, true, true);
-      
-      // Spalte A (Buch-ID) fett
-      sheet.getRange(2, 1, values.length, 1).setFontWeight('bold');
-      
-      // Spalte B (Standort) mit Hintergrundfarbe
-      sheet.getRange(2, 2, values.length, 1).setBackground('#e3f2fd');
-    }
-    
-    // Auto-resize columns
-    sheet.autoResizeColumns(1, 3);
-    
-    // Freeze first row
-    sheet.setFrozenRows(1);
-    
-    return ContentService.createTextOutput(JSON.stringify({
-      success: true,
-      message: 'Daten erfolgreich übertragen',
-      count: values.length,
-      url: spreadsheet.getUrl()
-    })).setMimeType(ContentService.MimeType.JSON);
-    
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({
-      success: false,
-      error: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}</textarea>
-            </div>
-        </div>
-        <div class="card">
-            <h2>📋 Erfasste Bücher</h2>
-            <div class="inventory-list" id="inventoryList">
-                <p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>
-            </div>
-            <div style="margin-top: 1rem;">
-                <button class="btn btn-success" onclick="exportByEmail()">📧 Per E-Mail versenden</button>
-                <button class="btn" onclick="exportData()">💾 CSV herunterladen</button>
-                <button class="btn" onclick="clearAll()">🗑️ Alle Daten löschen</button>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number" id="currentLocation">-</div>
+            <div class="stat-label">Aktueller Standort</div>
         </div>
     </div>
 
-    <script>
-        // Globale Variablen
-        let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
-        let currentLocationCode = '';
-        let lastAddedBook = null;
-        const EMAIL_RECIPIENT = 'buch@hennwack.com';
+    <!-- Standort eingeben -->
+    <div class="card">
+        <h2>🏷️ Neuer Standort</h2>
+        <div class="input-grid">
+            <div class="form-group">
+                <label for="shelfNumber">Regal (z.B. R001):</label>
+                <input type="text" id="shelfNumber" placeholder="R001" maxlength="4">
+            </div>
+            <div class="form-group">
+                <label for="compartmentNumber">Fach (z.B. F02):</label>
+                <input type="text" id="compartmentNumber" placeholder="F02" maxlength="3">
+            </div>
+        </div>
+        <button class="btn" onclick="setCurrentLocation()">✅ Standort bestätigen</button>
+    </div>
 
-        // App initialisieren
-        document.addEventListener('DOMContentLoaded', function() {
-            // Erst gespeicherte Daten laden
-            loadCurrentLocation();
+    <!-- Buch-ID eingeben -->
+    <div class="card">
+        <h2>✍️ Buch-ID eingeben</h2>
+        <div class="input-grid">
+            <div class="form-group">
+                <label for="bookPrefix">Buchstaben:</label>
+                <select id="bookPrefix" style="font-size: 1.2rem; font-weight: bold;">
+                    <option value="">Wählen...</option>
+                    <option value="Stl1">Stl1</option>
+                    <option value="Stl2">Stl2</option>
+                    <option value="Stlg">Stlg</option>
+                    <option value="Z">Z</option>
+                    <option value="ZA">ZA</option>
+                    <option value="ZB">ZB</option>
+                    <option value="ZC">ZC</option>
+                    <option value="ZD">ZD</option>
+                    <option value="ZE">ZE</option>
+                    <option value="ZF">ZF</option>
+                    <option value="MANUAL">✏️ Manuell ergänzen</option>
+                </select>
+                <input type="text" id="manualPrefix" placeholder="z.B. ZG, H, ABC..." 
+                       style="margin-top: 0.5rem; display: none; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;" 
+                       maxlength="4">
+            </div>
+            <div class="form-group">
+                <label for="bookNumber">Zahlen:</label>
+                <input type="number" id="bookNumber" placeholder="1234" 
+                       inputmode="numeric" pattern="[0-9]*" 
+                       style="font-size: 1.2rem; font-weight: bold;">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="bookNote">Notiz (Optional):</label>
+            <textarea id="bookNote" rows="2" placeholder="z.B. Zustand, Besonderheiten, Autor..." 
+                      style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+        </div>
+        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <button class="btn btn-success" onclick="addBook()">📖 Buch hinzufügen</button>
+            <button class="btn btn-small" onclick="resetForm()">🔄 Reset</button>
+            <button class="btn btn-small" onclick="undoLastBook()" id="undoBtn" style="display: none; background: #f39c12;">↩️ Rückgängig</button>
+        </div>
+        
+        <div class="tips">
+            <h4>📝 Schnell-Eingabe:</h4>
+            <p style="margin: 0.5rem 0; color: #666;">
+                1. <strong>Buchstaben</strong> aus Dropdown wählen<br>
+                2. <strong>Zahlen</strong> eintippen<br>
+                3. <strong>Enter</strong> drücken oder Button klicken
+            </p>
+        </div>
+    </div>
+
+    <!-- Google Sheets Setup -->
+    <div class="card" id="sheetsSetup" style="display: none;">
+        <h2>⚙️ Google Sheets Setup</h2>
+        <p style="margin-bottom: 1rem; color: #666;">
+            Für direkten Export benötigen Sie eine einmalige Einrichtung:
+        </p>
+        
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <h4>📝 Schritt-für-Schritt Setup:</h4>
+            <ol style="margin: 0.5rem 0 0 1.5rem; color: #666;">
+                <li>Öffnen Sie <a href="https://script.google.com" target="_blank">script.google.com</a></li>
+                <li>Klicken Sie <strong>"Neues Projekt"</strong></li>
+                <li>Kopieren Sie den Code unten und ersetzen Sie den Standard-Code</li>
+                <li>Klicken Sie <strong>"Speichern"</strong> (Disketten-Symbol)</li>
+                <li>Klicken Sie <strong>"Bereitstellen"</strong> → <strong>"Neue Bereitstellung"</strong></li>
+                <li>Bei "Typ" wählen: <strong>"Web-App"</strong></li>
+                <li><strong>WICHTIG:</strong> "Zugriff haben" → <strong>"Jeder"</strong> (nicht "Nur ich"!)</li>
+                <li>Klicken Sie <strong>"Bereitstellen"</strong></li>
+                <li>Bei Berechtigung: <strong>"Zugriff prüfen"</strong> → <strong>"Erweitert"</strong> → <strong>"Zu [Projektname] wechseln"</strong></li>
+                <li>Kopieren Sie die <strong>Web-App URL</strong> hierher</li>
+            </ol>
+        </div>
+        
+        <div class="form-group">
+            <label for="webAppUrl">Google Apps Script Web-App URL:</label>
+            <input type="url" id="webAppUrl" placeholder="https://script.google.com/macros/s/...">
+        </div>
+        
+        <button class="btn btn-success" onclick="saveWebAppUrl()">✅ URL speichern</button>
+        <button class="btn" onclick="testConnection()" style="background: #f39c12;">🔍 Verbindung testen</button>
+        <button class="btn" onclick="toggleSetup()">❌ Abbrechen</button>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+            <h4 style="color: #856404;">⚠️ Häufige Probleme:</h4>
+            <ul style="margin: 0.5rem 0 0 1.5rem; color: #856404;">
+                <li><strong>"Load failed"</strong> → Zugriff ist auf "Nur ich" statt "Jeder"</li>
+                <li><strong>404 Fehler</strong> → Falsche URL oder nicht bereitgestellt</li>
+                <li><strong>403 Fehler</strong> → Berechtigung nicht erteilt</li>
+                <li><strong>Bei erster Nutzung:</strong> "Zugriff prüfen" → "Erweitert" → "Zu [Projekt] wechseln"</li>
+            </ul>
+        </div>
+            <h4>📋 Apps Script Code:</h4>
+            <textarea readonly style="width: 100%; height: 300px; font-family: monospace; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem;" onclick="this.select()">function doPost(e) {
+```
+
+try {
+const data = JSON.parse(e.postData.contents);
+
+```
+// Test-Request
+if (data.test) {
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    message: 'Test erfolgreich'
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// IHR SPEZIFISCHES GOOGLE SHEET
+const SPREADSHEET_ID = '15DSlw48yNec16FXDj1QESX8zmDivS5JLvNhCBRuQsTw';
+
+// Sheet öffnen
+const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+let sheet = spreadsheet.getActiveSheet();
+
+// Header hinzufügen wenn leer oder falsch
+if (sheet.getLastRow() === 0 || sheet.getRange(1, 1).getValue() !== 'Buch_ID') {
+  sheet.clear(); // Alles löschen
+  sheet.getRange(1, 1, 1, 3).setValues([['Buch_ID', 'Neuer_Standort', 'Erfasst_am']]);
+  sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
+  sheet.getRange(1, 1, 1, 3).setBackground('#4285f4');
+  sheet.getRange(1, 1, 1, 3).setFontColor('white');
+}
+
+// Daten verarbeiten
+const values = data.inventory.map(item => [
+  item.bookId,
+  item.location,
+  new Date(item.timestamp).toLocaleDateString('de-DE')
+]);
+
+// Alte Daten löschen (außer Header)
+if (sheet.getLastRow() > 1) {
+  sheet.deleteRows(2, sheet.getLastRow() - 1);
+}
+
+// Neue Daten einfügen
+if (values.length > 0) {
+  sheet.getRange(2, 1, values.length, 3).setValues(values);
+  
+  // Formatierung
+  const dataRange = sheet.getRange(2, 1, values.length, 3);
+  dataRange.setBorder(true, true, true, true, true, true);
+  
+  // Spalte A (Buch-ID) fett
+  sheet.getRange(2, 1, values.length, 1).setFontWeight('bold');
+  
+  // Spalte B (Standort) mit Hintergrundfarbe
+  sheet.getRange(2, 2, values.length, 1).setBackground('#e3f2fd');
+}
+
+// Auto-resize columns
+sheet.autoResizeColumns(1, 3);
+
+// Freeze first row
+sheet.setFrozenRows(1);
+
+return ContentService.createTextOutput(JSON.stringify({
+  success: true,
+  message: 'Daten erfolgreich übertragen',
+  count: values.length,
+  url: spreadsheet.getUrl()
+})).setMimeType(ContentService.MimeType.JSON);
+```
+
+} catch (error) {
+return ContentService.createTextOutput(JSON.stringify({
+success: false,
+error: error.toString()
+})).setMimeType(ContentService.MimeType.JSON);
+}
+}</textarea>
+</div>
+</div>
+<div class="card">
+<h2>📋 Erfasste Bücher</h2>
+<div class="inventory-list" id="inventoryList">
+<p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst…</p>
+</div>
+<div style="margin-top: 1rem;">
+<button class="btn btn-success" onclick="exportByEmail()">📧 Per E-Mail versenden</button>
+<button class="btn" onclick="exportData()">💾 CSV herunterladen</button>
+<button class="btn" onclick="clearAll()">🗑️ Alle Daten löschen</button>
+</div>
+</div>
+</div>
+
+```
+<script>
+    // Globale Variablen
+    let inventory = JSON.parse(localStorage.getItem('bookInventory') || '[]');
+    let currentLocationCode = '';
+    let lastAddedBook = null;
+    const EMAIL_RECIPIENT = 'buch@hennwack.com';
+
+    // App initialisieren
+    document.addEventListener('DOMContentLoaded', function() {
+        // Erst gespeicherte Daten laden
+        loadCurrentLocation();
+        
+        // Dann Statistiken aktualisieren (zeigt "-" wenn kein Standort)
+        updateStats();
+        renderInventory();
+        
+        // Enter-Taste Unterstützung
+        document.getElementById('bookNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addBook();
+            }
+        });
+        
+        // Auto-Fokus bei Präfix-Wahl (mit Verzögerung für mobile Geräte)
+        document.getElementById('bookPrefix').addEventListener('change', function() {
+            const manualField = document.getElementById('manualPrefix');
             
-            // Dann Statistiken aktualisieren (zeigt "-" wenn kein Standort)
+            if (this.value === 'MANUAL') {
+                // Manuelles Textfeld anzeigen und fokussieren
+                manualField.style.display = 'block';
+                setTimeout(() => {
+                    manualField.focus();
+                    manualField.value = '';
+                }, 150);
+            } else {
+                // Manuelles Textfeld verstecken
+                manualField.style.display = 'none';
+                manualField.value = '';
+                
+                if (this.value) {
+                    // Normaler Auto-Fokus auf Zahlenfeld
+                    setTimeout(() => {
+                        const numberField = document.getElementById('bookNumber');
+                        numberField.focus();
+                        if (numberField.setSelectionRange) {
+                            numberField.setSelectionRange(numberField.value.length, numberField.value.length);
+                        }
+                    }, 150);
+                }
+            }
+        });
+        
+        // Enter-Taste auch für manuelles Präfix-Feld
+        document.getElementById('manualPrefix').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (this.value.trim()) {
+                    document.getElementById('bookNumber').focus();
+                }
+            }
+        });
+    });
+
+    // Aktueller Standort setzen
+    function setCurrentLocation() {
+        const shelf = document.getElementById('shelfNumber').value.toUpperCase().trim();
+        const compartment = document.getElementById('compartmentNumber').value.toUpperCase().trim();
+        
+        if (!shelf || !compartment) {
+            showError('Bitte geben Sie Regal und Fach an');
+            return;
+        }
+        
+        // Validierung
+        if (!shelf.match(/^R\d{3}$/)) {
+            showError('Regal-Format: R001, R002, etc.');
+            return;
+        }
+        
+        if (!compartment.match(/^F\d{2}$/)) {
+            showError('Fach-Format: F01, F02, etc.');
+            return;
+        }
+        
+        currentLocationCode = shelf + compartment;
+        localStorage.setItem('currentLocation', currentLocationCode);
+        updateStats();
+        showSuccess(`✅ Standort ${currentLocationCode} ausgewählt`);
+        
+        // Fokus auf Buchstaben-Dropdown
+        setTimeout(() => {
+            document.getElementById('bookPrefix').focus();
+        }, 500);
+    }
+
+    // Buch hinzufügen
+    function addBook() {
+        const prefixSelect = document.getElementById('bookPrefix').value;
+        const manualPrefix = document.getElementById('manualPrefix').value.trim().toUpperCase();
+        const number = document.getElementById('bookNumber').value.trim();
+        const note = document.getElementById('bookNote').value.trim();
+        
+        // Validierungen
+        if (!currentLocationCode) {
+            showError('❌ Bitte wählen Sie zuerst einen Standort aus');
+            return;
+        }
+        
+        // Präfix bestimmen (Dropdown oder manuell)
+        let prefix = '';
+        if (prefixSelect === 'MANUAL') {
+            if (!manualPrefix) {
+                showError('❌ Bitte geben Sie die Buchstabenkombination ein');
+                document.getElementById('manualPrefix').focus();
+                return;
+            }
+            // Validierung für manuelles Präfix (nur Buchstaben, 1-4 Zeichen)
+            if (!/^[A-Z]{1,4}$/i.test(manualPrefix)) {
+                showError('❌ Buchstabenkombination: nur Buchstaben, 1-4 Zeichen (z.B. ZG, ABC)');
+                document.getElementById('manualPrefix').focus();
+                return;
+            }
+            prefix = manualPrefix;
+        } else {
+            if (!prefixSelect) {
+                showError('❌ Bitte wählen Sie die Buchstabenkombination aus');
+                document.getElementById('bookPrefix').focus();
+                return;
+            }
+            prefix = prefixSelect;
+        }
+        
+        if (!number) {
+            showError('❌ Bitte geben Sie die Zahlen ein');
+            document.getElementById('bookNumber').focus();
+            return;
+        }
+        
+        // Zahlen validieren
+        if (!/^\d+$/.test(number)) {
+            showError('❌ Zahlen müssen mindestens 1 Ziffer enthalten (z.B. 5, 123, 1234)');
+            document.getElementById('bookNumber').focus();
+            return;
+        }
+        
+        const bookId = prefix + number;
+        
+        // Zu Inventar hinzufügen (mit Notiz)
+        addToInventory(bookId, currentLocationCode, note);
+        
+        // Als letztes hinzugefügtes Buch merken
+        lastAddedBook = bookId;
+        document.getElementById('undoBtn').style.display = 'inline-block';
+        
+        // Eingabe zurücksetzen (Zahlen und Notiz)
+        document.getElementById('bookNumber').value = '';
+        document.getElementById('bookNote').value = '';
+        document.getElementById('bookNumber').focus();
+        
+        showSuccess(`✅ Buch ${bookId} zu ${currentLocationCode} hinzugefügt`);
+    }
+
+    // Letztes Buch rückgängig machen
+    function undoLastBook() {
+        if (!lastAddedBook) return;
+        
+        if (confirm(`Letztes Buch "${lastAddedBook}" rückgängig machen?`)) {
+            inventory = inventory.filter(item => item.bookId !== lastAddedBook);
+            saveInventory();
             updateStats();
             renderInventory();
+            showSuccess(`↩️ Buch ${lastAddedBook} rückgängig gemacht`);
             
-            // Enter-Taste Unterstützung
-            document.getElementById('bookNumber').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    addBook();
-                }
-            });
-            
-            // Auto-Fokus bei Präfix-Wahl (mit Verzögerung für mobile Geräte)
-            document.getElementById('bookPrefix').addEventListener('change', function() {
-                const manualField = document.getElementById('manualPrefix');
-                
-                if (this.value === 'MANUAL') {
-                    // Manuelles Textfeld anzeigen und fokussieren
-                    manualField.style.display = 'block';
-                    setTimeout(() => {
-                        manualField.focus();
-                        manualField.value = '';
-                    }, 150);
-                } else {
-                    // Manuelles Textfeld verstecken
-                    manualField.style.display = 'none';
-                    manualField.value = '';
-                    
-                    if (this.value) {
-                        // Normaler Auto-Fokus auf Zahlenfeld
-                        setTimeout(() => {
-                            const numberField = document.getElementById('bookNumber');
-                            numberField.focus();
-                            if (numberField.setSelectionRange) {
-                                numberField.setSelectionRange(numberField.value.length, numberField.value.length);
-                            }
-                        }, 150);
-                    }
-                }
-            });
-            
-            // Enter-Taste auch für manuelles Präfix-Feld
-            document.getElementById('manualPrefix').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    if (this.value.trim()) {
-                        document.getElementById('bookNumber').focus();
-                    }
-                }
-            });
+            lastAddedBook = null;
+            document.getElementById('undoBtn').style.display = 'none';
+        }
+    }
+
+    // Eingabefelder zurücksetzen
+    function resetForm() {
+        document.getElementById('bookPrefix').value = '';
+        document.getElementById('bookNumber').value = '';
+        document.getElementById('bookNote').value = '';
+        document.getElementById('manualPrefix').value = '';
+        document.getElementById('manualPrefix').style.display = 'none';
+        document.getElementById('bookPrefix').focus();
+        showSuccess('🔄 Eingabefelder zurückgesetzt');
+    }
+
+    // Per E-Mail exportieren
+    function exportByEmail() {
+        if (inventory.length === 0) {
+            showError('Keine Daten zum Exportieren vorhanden');
+            return;
+        }
+
+        // Aktuelles Datum für Betreff
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('de-DE');
+        const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        
+        // Automatischer Betreff
+        const subject = `Buchbestand Neuindexierung - ${inventory.length} Bücher - ${dateStr} ${timeStr}`;
+
+        // E-Mail Body mit kopierbaren Daten
+        const emailBody = createCopyableEmailBody();
+
+        // mailto-Link erstellen
+        const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+
+        // E-Mail-Programm öffnen
+        try {
+            window.location.href = mailtoLink;
+            showSuccess(`📧 E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
+        } catch (error) {
+            showError('❌ Fehler beim Öffnen des E-Mail-Programms.');
+        }
+    }
+
+    // E-Mail Body mit kopierbaren Tabellendaten erstellen
+    function createCopyableEmailBody() {
+        let body = '';
+        
+        // Intro
+        body += 'Hallo,\n\n';
+        body += `anbei die Buchbestand-Neuindexierung mit ${inventory.length} erfassten Büchern.\n\n`;
+        
+        // Statistiken
+        const locations = [...new Set(inventory.map(item => item.location))];
+        body += `📊 Übersicht:\n`;
+        body += `• ${inventory.length} Bücher erfasst\n`;
+        body += `• ${locations.length} verschiedene Standorte\n`;
+        body += `• Erfasst am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
+        
+        // Kopier-Anweisung
+        body += '📋 TABELLENDATEN (zum Kopieren in Excel/Google Sheets):\n';
+        body += 'Markieren Sie die Daten unten und kopieren Sie sie (Strg+C).\n';
+        body += 'In Excel/Sheets: Einfügen (Strg+V) - die Spalten werden automatisch erkannt.\n\n';
+        body += ''.padEnd(80, '-') + '\n';
+        
+        // Tab-getrennte Header
+        body += 'Buch_ID\tNeuer_Standort\tErfasst_am\tNotiz\n';
+        
+        // Nach Standort sortieren
+        const sorted = [...inventory].sort((a, b) => {
+            if (a.location === b.location) {
+                return a.bookId.localeCompare(b.bookId);
+            }
+            return a.location.localeCompare(b.location);
         });
+        
+        // Tab-getrennte Daten
+        sorted.forEach(item => {
+            const date = new Date(item.timestamp).toLocaleDateString('de-DE');
+            const note = (item.note && item.note.trim()) ? item.note.replace(/\t/g, ' ') : '';
+            body += `${item.bookId}\t${item.location}\t${date}\t${note}\n`;
+        });
+        
+        body += ''.padEnd(80, '-') + '\n\n';
+        
+        body += '💡 Tipp: Die Daten sind tab-getrennt formatiert.\n';
+        body += 'Beim Einfügen in Excel/Sheets werden automatisch 4 Spalten erstellt.\n\n';
+        body += 'Viele Grüße\n';
+        
+        return body;
+    }
 
-        // Aktueller Standort setzen
-        function setCurrentLocation() {
-            const shelf = document.getElementById('shelfNumber').value.toUpperCase().trim();
-            const compartment = document.getElementById('compartmentNumber').value.toUpperCase().trim();
-            
-            if (!shelf || !compartment) {
-                showError('Bitte geben Sie Regal und Fach an');
-                return;
+    // Zu Bestand hinzufügen
+    function addToInventory(bookId, location, note = '') {
+        // Prüfen ob bereits vorhanden
+        const existingIndex = inventory.findIndex(item => item.bookId === bookId);
+        
+        if (existingIndex >= 0) {
+            const oldLocation = inventory[existingIndex].location;
+            const oldNote = inventory[existingIndex].note || '';
+            let confirmMsg = `Buch ${bookId} ist bereits erfasst bei ${oldLocation}.`;
+            if (oldNote) {
+                confirmMsg += `\nAlte Notiz: "${oldNote}"`;
             }
+            confirmMsg += '\n\nStandort und Notiz überschreiben?';
             
-            // Validierung
-            if (!shelf.match(/^R\d{3}$/)) {
-                showError('Regal-Format: R001, R002, etc.');
-                return;
+            if (confirm(confirmMsg)) {
+                inventory[existingIndex].location = location;
+                inventory[existingIndex].note = note;
+                inventory[existingIndex].timestamp = new Date().toISOString();
             }
-            
-            if (!compartment.match(/^F\d{2}$/)) {
-                showError('Fach-Format: F01, F02, etc.');
-                return;
-            }
-            
-            currentLocationCode = shelf + compartment;
-            localStorage.setItem('currentLocation', currentLocationCode);
+        } else {
+            inventory.push({
+                bookId: bookId,
+                location: location,
+                note: note,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        saveInventory();
+        updateStats();
+        renderInventory();
+    }
+
+    // Bestand speichern
+    function saveInventory() {
+        localStorage.setItem('bookInventory', JSON.stringify(inventory));
+    }
+
+    // Aktueller Standort laden
+    function loadCurrentLocation() {
+        const saved = localStorage.getItem('currentLocation');
+        if (saved && saved.length === 7) {
+            currentLocationCode = saved;
+            const shelf = saved.substr(0, 4);
+            const compartment = saved.substr(4, 3);
+            document.getElementById('shelfNumber').value = shelf;
+            document.getElementById('compartmentNumber').value = compartment;
             updateStats();
-            showSuccess(`✅ Standort ${currentLocationCode} ausgewählt`);
-            
-            // Fokus auf Buchstaben-Dropdown
-            setTimeout(() => {
-                document.getElementById('bookPrefix').focus();
-            }, 500);
         }
+    }
 
-        // Buch hinzufügen
-        function addBook() {
-            const prefixSelect = document.getElementById('bookPrefix').value;
-            const manualPrefix = document.getElementById('manualPrefix').value.trim().toUpperCase();
-            const number = document.getElementById('bookNumber').value.trim();
-            
-            // Validierungen
-            if (!currentLocationCode) {
-                showError('❌ Bitte wählen Sie zuerst einen Standort aus');
-                return;
-            }
-            
-            // Präfix bestimmen (Dropdown oder manuell)
-            let prefix = '';
-            if (prefixSelect === 'MANUAL') {
-                if (!manualPrefix) {
-                    showError('❌ Bitte geben Sie die Buchstabenkombination ein');
-                    document.getElementById('manualPrefix').focus();
-                    return;
-                }
-                // Validierung für manuelles Präfix (nur Buchstaben, 1-4 Zeichen)
-                if (!/^[A-Z]{1,4}$/i.test(manualPrefix)) {
-                    showError('❌ Buchstabenkombination: nur Buchstaben, 1-4 Zeichen (z.B. ZG, ABC)');
-                    document.getElementById('manualPrefix').focus();
-                    return;
-                }
-                prefix = manualPrefix;
-            } else {
-                if (!prefixSelect) {
-                    showError('❌ Bitte wählen Sie die Buchstabenkombination aus');
-                    document.getElementById('bookPrefix').focus();
-                    return;
-                }
-                prefix = prefixSelect;
-            }
-            
-            if (!number) {
-                showError('❌ Bitte geben Sie die Zahlen ein');
-                document.getElementById('bookNumber').focus();
-                return;
-            }
-            
-            // Zahlen validieren
-            if (!/^\d+$/.test(number)) {
-                showError('❌ Zahlen müssen mindestens 1 Ziffer enthalten (z.B. 5, 123, 1234)');
-                document.getElementById('bookNumber').focus();
-                return;
-            }
-            
-            const bookId = prefix + number;
-            
-            // Zu Inventar hinzufügen
-            addToInventory(bookId, currentLocationCode);
-            
-            // Als letztes hinzugefügtes Buch merken
-            lastAddedBook = bookId;
-            document.getElementById('undoBtn').style.display = 'inline-block';
-            
-            // Eingabe zurücksetzen (nur Zahlen)
-            document.getElementById('bookNumber').value = '';
-            document.getElementById('bookNumber').focus();
-            
-            showSuccess(`✅ Buch ${bookId} zu ${currentLocationCode} hinzugefügt`);
+    // Statistiken aktualisieren
+    function updateStats() {
+        document.getElementById('totalBooks').textContent = inventory.length;
+        
+        const locations = [...new Set(inventory.map(item => item.location))];
+        document.getElementById('totalLocations').textContent = locations.length;
+        
+        // Aktueller Standort mit explizitem "-" wenn leer
+        document.getElementById('currentLocation').textContent = currentLocationCode || '-';
+    }
+
+    // Bestand anzeigen
+    function renderInventory() {
+        const container = document.getElementById('inventoryList');
+        
+        if (inventory.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>';
+            return;
         }
+        
+        container.innerHTML = '';
+        
+        // Nach Standort sortieren
+        const sorted = [...inventory].sort((a, b) => {
+            if (a.location === b.location) {
+                return a.bookId.localeCompare(b.bookId);
+            }
+            return a.location.localeCompare(b.location);
+        });
+        
+        sorted.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'inventory-item';
+            div.innerHTML = `
+                <div>
+                    <strong>${item.bookId}</strong><br>
+                    <small>${new Date(item.timestamp).toLocaleDateString('de-DE')}</small>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="location-badge">${item.location}</span>
+                    <button class="delete-btn" onclick="removeBook('${item.bookId}')">❌</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
-        // Letztes Buch rückgängig machen
-        function undoLastBook() {
-            if (!lastAddedBook) return;
+    // Buch entfernen
+    function removeBook(bookId) {
+        if (confirm(`Buch ${bookId} aus der Liste entfernen?`)) {
+            inventory = inventory.filter(item => item.bookId !== bookId);
+            saveInventory();
+            updateStats();
+            renderInventory();
+            showSuccess(`🗑️ Buch ${bookId} entfernt`);
             
-            if (confirm(`Letztes Buch "${lastAddedBook}" rückgängig machen?`)) {
-                inventory = inventory.filter(item => item.bookId !== lastAddedBook);
-                saveInventory();
-                updateStats();
-                renderInventory();
-                showSuccess(`↩️ Buch ${lastAddedBook} rückgängig gemacht`);
-                
+            // Undo-Button ausblenden wenn das zuletzt hinzugefügte Buch gelöscht wurde
+            if (lastAddedBook === bookId) {
                 lastAddedBook = null;
                 document.getElementById('undoBtn').style.display = 'none';
             }
         }
+    }
 
-        // Eingabefelder zurücksetzen
-        function resetForm() {
-            document.getElementById('bookPrefix').value = '';
-            document.getElementById('bookNumber').value = '';
-            document.getElementById('manualPrefix').value = '';
-            document.getElementById('manualPrefix').style.display = 'none';
-            document.getElementById('bookPrefix').focus();
-            showSuccess('🔄 Eingabefelder zurückgesetzt');
-        }
-
-        // Per E-Mail exportieren
-        function exportByEmail() {
-            if (inventory.length === 0) {
-                showError('Keine Daten zum Exportieren vorhanden');
-                return;
-            }
-
-            // Aktuelles Datum für Betreff
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('de-DE');
-            const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            
-            // Automatischer Betreff
-            const subject = `Buchbestand Neuindexierung - ${inventory.length} Bücher - ${dateStr} ${timeStr}`;
-
-            // E-Mail Body mit kopierbaren Daten
-            const emailBody = createCopyableEmailBody();
-
-            // mailto-Link erstellen
-            const mailtoLink = `mailto:${EMAIL_RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-
-            // E-Mail-Programm öffnen
-            try {
-                window.location.href = mailtoLink;
-                showSuccess(`📧 E-Mail an ${EMAIL_RECIPIENT} wird geöffnet...`);
-            } catch (error) {
-                showError('❌ Fehler beim Öffnen des E-Mail-Programms.');
+    // Google Sheets Setup anzeigen/verbergen
+    function toggleSetup() {
+        const setup = document.getElementById('sheetsSetup');
+        const isVisible = setup.style.display !== 'none';
+        
+        if (isVisible) {
+            setup.style.display = 'none';
+        } else {
+            setup.style.display = 'block';
+            if (webAppUrl) {
+                document.getElementById('webAppUrl').value = webAppUrl;
             }
         }
+    }
 
-        // E-Mail Body mit kopierbaren Tabellendaten erstellen
-        function createCopyableEmailBody() {
-            let body = '';
-            
-            // Intro
-            body += 'Hallo,\n\n';
-            body += `anbei die Buchbestand-Neuindexierung mit ${inventory.length} erfassten Büchern.\n\n`;
-            
-            // Statistiken
-            const locations = [...new Set(inventory.map(item => item.location))];
-            body += `📊 Übersicht:\n`;
-            body += `• ${inventory.length} Bücher erfasst\n`;
-            body += `• ${locations.length} verschiedene Standorte\n`;
-            body += `• Erfasst am: ${new Date().toLocaleDateString('de-DE')}\n\n`;
-            
-            // Kopier-Anweisung
-            body += '📋 TABELLENDATEN (zum Kopieren in Excel/Google Sheets):\n';
-            body += 'Markieren Sie die Daten unten und kopieren Sie sie (Strg+C).\n';
-            body += 'In Excel/Sheets: Einfügen (Strg+V) - die Spalten werden automatisch erkannt.\n\n';
-            body += ''.padEnd(70, '-') + '\n';
-            
-            // Tab-getrennte Header
-            body += 'Buch_ID\tNeuer_Standort\tErfasst_am\n';
-            
-            // Nach Standort sortieren
-            const sorted = [...inventory].sort((a, b) => {
-                if (a.location === b.location) {
-                    return a.bookId.localeCompare(b.bookId);
-                }
-                return a.location.localeCompare(b.location);
-            });
-            
-            // Tab-getrennte Daten
-            sorted.forEach(item => {
-                const date = new Date(item.timestamp).toLocaleDateString('de-DE');
-                body += `${item.bookId}\t${item.location}\t${date}\n`;
-            });
-            
-            body += ''.padEnd(70, '-') + '\n\n';
-            
-            body += '💡 Tipp: Die Daten sind tab-getrennt formatiert.\n';
-            body += 'Beim Einfügen in Excel/Sheets werden automatisch 3 Spalten erstellt.\n\n';
-            body += 'Viele Grüße\n';
-            
-            return body;
+    // Verbindung testen
+    async function testConnection() {
+        const url = document.getElementById('webAppUrl').value.trim();
+        
+        if (!url) {
+            showError('Bitte geben Sie zuerst eine Web-App URL ein');
+            return;
         }
-
-        // Zu Bestand hinzufügen
-        function addToInventory(bookId, location) {
-            // Prüfen ob bereits vorhanden
-            const existingIndex = inventory.findIndex(item => item.bookId === bookId);
+        
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⏳ Teste...';
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    test: true,
+                    inventory: []
+                })
+            });
             
-            if (existingIndex >= 0) {
-                if (confirm(`Buch ${bookId} ist bereits erfasst bei ${inventory[existingIndex].location}. Standort überschreiben?`)) {
-                    inventory[existingIndex].location = location;
-                    inventory[existingIndex].timestamp = new Date().toISOString();
-                }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success !== undefined) {
+                showSuccess('✅ Verbindung erfolgreich! Das Setup funktioniert.');
             } else {
-                inventory.push({
-                    bookId: bookId,
-                    location: location,
-                    timestamp: new Date().toISOString()
-                });
+                throw new Error('Unerwartete Antwort vom Script');
             }
             
-            saveInventory();
+        } catch (error) {
+            console.error('Test Fehler:', error);
+            
+            let errorMsg = '❌ Verbindung fehlgeschlagen:\n\n';
+            
+            if (error.message.includes('CORS')) {
+                errorMsg += '🔒 CORS-Fehler: Apps Script nicht richtig bereitgestellt.\n\n' +
+                          '✅ Lösung:\n' +
+                          '1. Bei script.google.com → Bereitstellen → Bereitstellung verwalten\n' +
+                          '2. Zugriff haben: "Jeder" (nicht "Nur ich")\n' +
+                          '3. Neue Bereitstellung erstellen';
+                          
+            } else if (error.message.includes('404') || error.message.includes('Not Found')) {
+                errorMsg += '🔗 URL nicht gefunden.\n\n' +
+                          '✅ Lösung:\n' +
+                          '1. Prüfen Sie die Web-App URL\n' +
+                          '2. Stellen Sie sicher, dass das Script bereitgestellt wurde';
+                          
+            } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
+                errorMsg += '🚫 Zugriff verweigert.\n\n' +
+                          '✅ Lösung:\n' +
+                          '1. Zugriff haben: "Jeder" wählen\n' +
+                          '2. Berechtigung erteilen bei der ersten Bereitstellung';
+                          
+            } else {
+                errorMsg += error.message + '\n\n' +
+                          '✅ Prüfen Sie:\n' +
+                          '1. Internet-Verbindung\n' +
+                          '2. Apps Script URL\n' +
+                          '3. Berechtigung auf "Jeder"';
+            }
+            
+            showError(errorMsg);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Web App URL speichern
+    function saveWebAppUrl() {
+        const url = document.getElementById('webAppUrl').value.trim();
+        
+        if (!url) {
+            showError('Bitte geben Sie eine gültige Web-App URL ein');
+            return;
+        }
+        
+        if (!url.includes('script.google.com/macros/s/')) {
+            showError('URL muss eine Google Apps Script Web-App URL sein');
+            return;
+        }
+        
+        webAppUrl = url;
+        localStorage.setItem('webAppUrl', webAppUrl);
+        updateExportButtons();
+        toggleSetup();
+        showSuccess('✅ Google Sheets Setup gespeichert! Direkter Export ist jetzt verfügbar.');
+    }
+
+    // Direkt zu Google Sheets exportieren
+    async function exportToGoogleSheetsDirect() {
+        if (!webAppUrl) {
+            showError('Bitte konfigurieren Sie zuerst das Google Sheets Setup');
+            toggleSetup();
+            return;
+        }
+        
+        if (inventory.length === 0) {
+            showError('Keine Daten zum Exportieren vorhanden');
+            return;
+        }
+        
+        // Loading-Anzeige
+        const btn = document.getElementById('directExportBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⏳ Übertrage...';
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(webAppUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    inventory: inventory,
+                    timestamp: new Date().toISOString()
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                let successMsg = `✅ ${result.count} Bücher erfolgreich zu Google Sheets übertragen!`;
+                if (result.url) {
+                    successMsg += `\n\n📊 Sheet öffnen: ${result.url}`;
+                }
+                showSuccess(successMsg);
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler');
+            }
+            
+        } catch (error) {
+            console.error('Export Fehler:', error);
+            showError(`❌ Fehler beim Export: ${error.message}\n\nPrüfen Sie die Web-App URL und Berechtigung.`);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Copy & Paste Export (bestehende Funktion umbenannt)
+    function exportToGoogleSheets() {
+        if (inventory.length === 0) {
+            showError('Keine Daten zum Exportieren vorhanden');
+            return;
+        }
+
+        // TSV-Format erstellen (Tab-separated, optimal für Google Sheets)
+        const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am'];
+        const tsvContent = [
+            headers.join('\t'),
+            ...inventory.map(item => [
+                item.bookId,
+                item.location,
+                new Date(item.timestamp).toLocaleDateString('de-DE')
+            ].join('\t'))
+        ].join('\n');
+
+        // Daten in Zwischenablage kopieren
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(tsvContent).then(() => {
+                showGoogleSheetsInstructions();
+            }).catch(() => {
+                // Fallback wenn Clipboard API nicht funktioniert
+                showDataForCopy(tsvContent);
+            });
+        } else {
+            // Fallback für ältere Browser
+            showDataForCopy(tsvContent);
+        }
+    }
+
+    // Google Sheets Anweisungen anzeigen
+    function showGoogleSheetsInstructions() {
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 1000; 
+            display: flex; align-items: center; justify-content: center;
+        `;
+        
+        modal.innerHTML = `
+            <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem;">
+                <h2 style="margin-bottom: 1rem;">📊 Google Sheets Import</h2>
+                <p style="margin-bottom: 1rem;"><strong>Daten wurden in die Zwischenablage kopiert! ✅</strong></p>
+                
+                <h3>📋 So geht's weiter:</h3>
+                <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                    <li>Klicken Sie auf <strong>"Google Sheets öffnen"</strong></li>
+                    <li>In Google Sheets: <strong>Strg+V</strong> (oder Cmd+V auf Mac)</li>
+                    <li>Die Daten werden automatisch in Spalten aufgeteilt</li>
+                </ol>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 2rem;">
+                    <button onclick="openGoogleSheets()" style="flex: 1; padding: 0.75rem; background: #4285f4; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        📊 Google Sheets öffnen
+                    </button>
+                    <button onclick="closeModal()" style="flex: 1; padding: 0.75rem; background: #666; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ❌ Schließen
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        window.currentModal = modal;
+    }
+
+    // Daten zum Kopieren anzeigen (Fallback)
+    function showDataForCopy(tsvContent) {
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 1000; 
+            display: flex; align-items: center; justify-content: center;
+        `;
+        
+        modal.innerHTML = `
+            <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 600px; margin: 1rem;">
+                <h2 style="margin-bottom: 1rem;">📊 Google Sheets Import</h2>
+                <p style="margin-bottom: 1rem;">Kopieren Sie die Daten unten und fügen Sie sie in Google Sheets ein:</p>
+                
+                <textarea readonly style="width: 100%; height: 200px; font-family: monospace; margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" 
+                          onclick="this.select()">${tsvContent}</textarea>
+                
+                <h3>📋 Anleitung:</h3>
+                <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                    <li><strong>Daten markieren und kopieren</strong> (Strg+C)</li>
+                    <li>Klicken Sie auf <strong>"Google Sheets öffnen"</strong></li>
+                    <li>In Google Sheets: <strong>Strg+V</strong> einfügen</li>
+                </ol>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 2rem;">
+                    <button onclick="openGoogleSheets()" style="flex: 1; padding: 0.75rem; background: #4285f4; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        📊 Google Sheets öffnen
+                    </button>
+                    <button onclick="closeModal()" style="flex: 1; padding: 0.75rem; background: #666; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ❌ Schließen
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        window.currentModal = modal;
+    }
+
+    // Google Sheets öffnen
+    function openGoogleSheets() {
+        window.open('https://sheets.google.com/create', '_blank');
+        closeModal();
+    }
+
+    // Modal schließen
+    function closeModal() {
+        if (window.currentModal) {
+            document.body.removeChild(window.currentModal);
+            window.currentModal = null;
+        }
+    }
+
+    // CSV-Datei herunterladen
+    function exportData() {
+        if (inventory.length === 0) {
+            showError('Keine Daten zum Exportieren vorhanden');
+            return;
+        }
+        
+        // CSV erstellen
+        const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am', 'Notiz'];
+        const csvContent = [
+            headers.join(','),
+            ...inventory.map(item => {
+                const note = (item.note && item.note.trim()) ? `"${item.note.replace(/"/g, '""')}"` : '';
+                return [
+                    item.bookId,
+                    item.location,
+                    new Date(item.timestamp).toLocaleDateString('de-DE'),
+                    note
+                ].join(',');
+            })
+        ].join('\n');
+        
+        // Download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `buchbestand_neuindexierung_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        
+        showSuccess('📊 CSV-Datei heruntergeladen');
+    }
+
+    // Alle Daten löschen
+    function clearAll() {
+        if (confirm('Wirklich alle erfassten Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+            inventory = [];
+            localStorage.removeItem('bookInventory');
             updateStats();
             renderInventory();
+            showSuccess('🗑️ Alle Daten gelöscht');
         }
+    }
 
-        // Bestand speichern
-        function saveInventory() {
-            localStorage.setItem('bookInventory', JSON.stringify(inventory));
-        }
+    // Nachrichten anzeigen
+    function showError(message) {
+        showMessage(message, 'error');
+    }
 
-        // Aktueller Standort laden
-        function loadCurrentLocation() {
-            const saved = localStorage.getItem('currentLocation');
-            if (saved && saved.length === 7) {
-                currentLocationCode = saved;
-                const shelf = saved.substr(0, 4);
-                const compartment = saved.substr(4, 3);
-                document.getElementById('shelfNumber').value = shelf;
-                document.getElementById('compartmentNumber').value = compartment;
-                updateStats();
+    function showSuccess(message) {
+        showMessage(message, 'success');
+    }
+
+    function showMessage(message, type) {
+        // Vorherige Nachrichten entfernen
+        document.querySelectorAll('.error, .success').forEach(el => el.remove());
+        
+        const div = document.createElement('div');
+        div.className = type;
+        div.textContent = message;
+        
+        document.querySelector('.container').insertBefore(div, document.querySelector('.stats'));
+        
+        // Nach 4 Sekunden entfernen
+        setTimeout(() => {
+            if (div.parentNode) {
+                div.parentNode.removeChild(div);
             }
-        }
+        }, 4000);
+    }
+</script>
+```
 
-        // Statistiken aktualisieren
-        function updateStats() {
-            document.getElementById('totalBooks').textContent = inventory.length;
-            
-            const locations = [...new Set(inventory.map(item => item.location))];
-            document.getElementById('totalLocations').textContent = locations.length;
-            
-            // Aktueller Standort mit explizitem "-" wenn leer
-            document.getElementById('currentLocation').textContent = currentLocationCode || '-';
-        }
-
-        // Bestand anzeigen
-        function renderInventory() {
-            const container = document.getElementById('inventoryList');
-            
-            if (inventory.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Noch keine Bücher erfasst...</p>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            // Nach Standort sortieren
-            const sorted = [...inventory].sort((a, b) => {
-                if (a.location === b.location) {
-                    return a.bookId.localeCompare(b.bookId);
-                }
-                return a.location.localeCompare(b.location);
-            });
-            
-            sorted.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'inventory-item';
-                div.innerHTML = `
-                    <div>
-                        <strong>${item.bookId}</strong><br>
-                        <small>${new Date(item.timestamp).toLocaleDateString('de-DE')}</small>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span class="location-badge">${item.location}</span>
-                        <button class="delete-btn" onclick="removeBook('${item.bookId}')">❌</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Buch entfernen
-        function removeBook(bookId) {
-            if (confirm(`Buch ${bookId} aus der Liste entfernen?`)) {
-                inventory = inventory.filter(item => item.bookId !== bookId);
-                saveInventory();
-                updateStats();
-                renderInventory();
-                showSuccess(`🗑️ Buch ${bookId} entfernt`);
-                
-                // Undo-Button ausblenden wenn das zuletzt hinzugefügte Buch gelöscht wurde
-                if (lastAddedBook === bookId) {
-                    lastAddedBook = null;
-                    document.getElementById('undoBtn').style.display = 'none';
-                }
-            }
-        }
-
-        // Google Sheets Setup anzeigen/verbergen
-        function toggleSetup() {
-            const setup = document.getElementById('sheetsSetup');
-            const isVisible = setup.style.display !== 'none';
-            
-            if (isVisible) {
-                setup.style.display = 'none';
-            } else {
-                setup.style.display = 'block';
-                if (webAppUrl) {
-                    document.getElementById('webAppUrl').value = webAppUrl;
-                }
-            }
-        }
-
-        // Verbindung testen
-        async function testConnection() {
-            const url = document.getElementById('webAppUrl').value.trim();
-            
-            if (!url) {
-                showError('Bitte geben Sie zuerst eine Web-App URL ein');
-                return;
-            }
-            
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Teste...';
-            btn.disabled = true;
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        test: true,
-                        inventory: []
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success !== undefined) {
-                    showSuccess('✅ Verbindung erfolgreich! Das Setup funktioniert.');
-                } else {
-                    throw new Error('Unerwartete Antwort vom Script');
-                }
-                
-            } catch (error) {
-                console.error('Test Fehler:', error);
-                
-                let errorMsg = '❌ Verbindung fehlgeschlagen:\n\n';
-                
-                if (error.message.includes('CORS')) {
-                    errorMsg += '🔒 CORS-Fehler: Apps Script nicht richtig bereitgestellt.\n\n' +
-                              '✅ Lösung:\n' +
-                              '1. Bei script.google.com → Bereitstellen → Bereitstellung verwalten\n' +
-                              '2. Zugriff haben: "Jeder" (nicht "Nur ich")\n' +
-                              '3. Neue Bereitstellung erstellen';
-                              
-                } else if (error.message.includes('404') || error.message.includes('Not Found')) {
-                    errorMsg += '🔗 URL nicht gefunden.\n\n' +
-                              '✅ Lösung:\n' +
-                              '1. Prüfen Sie die Web-App URL\n' +
-                              '2. Stellen Sie sicher, dass das Script bereitgestellt wurde';
-                              
-                } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
-                    errorMsg += '🚫 Zugriff verweigert.\n\n' +
-                              '✅ Lösung:\n' +
-                              '1. Zugriff haben: "Jeder" wählen\n' +
-                              '2. Berechtigung erteilen bei der ersten Bereitstellung';
-                              
-                } else {
-                    errorMsg += error.message + '\n\n' +
-                              '✅ Prüfen Sie:\n' +
-                              '1. Internet-Verbindung\n' +
-                              '2. Apps Script URL\n' +
-                              '3. Berechtigung auf "Jeder"';
-                }
-                
-                showError(errorMsg);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Web App URL speichern
-        function saveWebAppUrl() {
-            const url = document.getElementById('webAppUrl').value.trim();
-            
-            if (!url) {
-                showError('Bitte geben Sie eine gültige Web-App URL ein');
-                return;
-            }
-            
-            if (!url.includes('script.google.com/macros/s/')) {
-                showError('URL muss eine Google Apps Script Web-App URL sein');
-                return;
-            }
-            
-            webAppUrl = url;
-            localStorage.setItem('webAppUrl', webAppUrl);
-            updateExportButtons();
-            toggleSetup();
-            showSuccess('✅ Google Sheets Setup gespeichert! Direkter Export ist jetzt verfügbar.');
-        }
-
-        // Direkt zu Google Sheets exportieren
-        async function exportToGoogleSheetsDirect() {
-            if (!webAppUrl) {
-                showError('Bitte konfigurieren Sie zuerst das Google Sheets Setup');
-                toggleSetup();
-                return;
-            }
-            
-            if (inventory.length === 0) {
-                showError('Keine Daten zum Exportieren vorhanden');
-                return;
-            }
-            
-            // Loading-Anzeige
-            const btn = document.getElementById('directExportBtn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Übertrage...';
-            btn.disabled = true;
-            
-            try {
-                const response = await fetch(webAppUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        inventory: inventory,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    let successMsg = `✅ ${result.count} Bücher erfolgreich zu Google Sheets übertragen!`;
-                    if (result.url) {
-                        successMsg += `\n\n📊 Sheet öffnen: ${result.url}`;
-                    }
-                    showSuccess(successMsg);
-                } else {
-                    throw new Error(result.error || 'Unbekannter Fehler');
-                }
-                
-            } catch (error) {
-                console.error('Export Fehler:', error);
-                showError(`❌ Fehler beim Export: ${error.message}\n\nPrüfen Sie die Web-App URL und Berechtigung.`);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Copy & Paste Export (bestehende Funktion umbenannt)
-        function exportToGoogleSheets() {
-            if (inventory.length === 0) {
-                showError('Keine Daten zum Exportieren vorhanden');
-                return;
-            }
-
-            // TSV-Format erstellen (Tab-separated, optimal für Google Sheets)
-            const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am'];
-            const tsvContent = [
-                headers.join('\t'),
-                ...inventory.map(item => [
-                    item.bookId,
-                    item.location,
-                    new Date(item.timestamp).toLocaleDateString('de-DE')
-                ].join('\t'))
-            ].join('\n');
-
-            // Daten in Zwischenablage kopieren
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(tsvContent).then(() => {
-                    showGoogleSheetsInstructions();
-                }).catch(() => {
-                    // Fallback wenn Clipboard API nicht funktioniert
-                    showDataForCopy(tsvContent);
-                });
-            } else {
-                // Fallback für ältere Browser
-                showDataForCopy(tsvContent);
-            }
-        }
-
-        // Google Sheets Anweisungen anzeigen
-        function showGoogleSheetsInstructions() {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: rgba(0,0,0,0.8); z-index: 1000; 
-                display: flex; align-items: center; justify-content: center;
-            `;
-            
-            modal.innerHTML = `
-                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem;">
-                    <h2 style="margin-bottom: 1rem;">📊 Google Sheets Import</h2>
-                    <p style="margin-bottom: 1rem;"><strong>Daten wurden in die Zwischenablage kopiert! ✅</strong></p>
-                    
-                    <h3>📋 So geht's weiter:</h3>
-                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
-                        <li>Klicken Sie auf <strong>"Google Sheets öffnen"</strong></li>
-                        <li>In Google Sheets: <strong>Strg+V</strong> (oder Cmd+V auf Mac)</li>
-                        <li>Die Daten werden automatisch in Spalten aufgeteilt</li>
-                    </ol>
-                    
-                    <div style="display: flex; gap: 0.5rem; margin-top: 2rem;">
-                        <button onclick="openGoogleSheets()" style="flex: 1; padding: 0.75rem; background: #4285f4; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                            📊 Google Sheets öffnen
-                        </button>
-                        <button onclick="closeModal()" style="flex: 1; padding: 0.75rem; background: #666; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                            ❌ Schließen
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            window.currentModal = modal;
-        }
-
-        // Daten zum Kopieren anzeigen (Fallback)
-        function showDataForCopy(tsvContent) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: rgba(0,0,0,0.8); z-index: 1000; 
-                display: flex; align-items: center; justify-content: center;
-            `;
-            
-            modal.innerHTML = `
-                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 600px; margin: 1rem;">
-                    <h2 style="margin-bottom: 1rem;">📊 Google Sheets Import</h2>
-                    <p style="margin-bottom: 1rem;">Kopieren Sie die Daten unten und fügen Sie sie in Google Sheets ein:</p>
-                    
-                    <textarea readonly style="width: 100%; height: 200px; font-family: monospace; margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" 
-                              onclick="this.select()">${tsvContent}</textarea>
-                    
-                    <h3>📋 Anleitung:</h3>
-                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
-                        <li><strong>Daten markieren und kopieren</strong> (Strg+C)</li>
-                        <li>Klicken Sie auf <strong>"Google Sheets öffnen"</strong></li>
-                        <li>In Google Sheets: <strong>Strg+V</strong> einfügen</li>
-                    </ol>
-                    
-                    <div style="display: flex; gap: 0.5rem; margin-top: 2rem;">
-                        <button onclick="openGoogleSheets()" style="flex: 1; padding: 0.75rem; background: #4285f4; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                            📊 Google Sheets öffnen
-                        </button>
-                        <button onclick="closeModal()" style="flex: 1; padding: 0.75rem; background: #666; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                            ❌ Schließen
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            window.currentModal = modal;
-        }
-
-        // Google Sheets öffnen
-        function openGoogleSheets() {
-            window.open('https://sheets.google.com/create', '_blank');
-            closeModal();
-        }
-
-        // Modal schließen
-        function closeModal() {
-            if (window.currentModal) {
-                document.body.removeChild(window.currentModal);
-                window.currentModal = null;
-            }
-        }
-
-        // CSV-Datei herunterladen
-        function exportData() {
-            if (inventory.length === 0) {
-                showError('Keine Daten zum Exportieren vorhanden');
-                return;
-            }
-            
-            // CSV erstellen
-            const headers = ['Buch_ID', 'Neuer_Standort', 'Erfasst_am'];
-            const csvContent = [
-                headers.join(','),
-                ...inventory.map(item => [
-                    item.bookId,
-                    item.location,
-                    new Date(item.timestamp).toLocaleDateString('de-DE')
-                ].join(','))
-            ].join('\n');
-            
-            // Download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `buchbestand_neuindexierung_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            
-            showSuccess('📊 CSV-Datei heruntergeladen');
-        }
-
-        // Alle Daten löschen
-        function clearAll() {
-            if (confirm('Wirklich alle erfassten Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
-                inventory = [];
-                localStorage.removeItem('bookInventory');
-                updateStats();
-                renderInventory();
-                showSuccess('🗑️ Alle Daten gelöscht');
-            }
-        }
-
-        // Nachrichten anzeigen
-        function showError(message) {
-            showMessage(message, 'error');
-        }
-
-        function showSuccess(message) {
-            showMessage(message, 'success');
-        }
-
-        function showMessage(message, type) {
-            // Vorherige Nachrichten entfernen
-            document.querySelectorAll('.error, .success').forEach(el => el.remove());
-            
-            const div = document.createElement('div');
-            div.className = type;
-            div.textContent = message;
-            
-            document.querySelector('.container').insertBefore(div, document.querySelector('.stats'));
-            
-            // Nach 4 Sekunden entfernen
-            setTimeout(() => {
-                if (div.parentNode) {
-                    div.parentNode.removeChild(div);
-                }
-            }, 4000);
-        }
-    </script>
 </body>
 </html>
